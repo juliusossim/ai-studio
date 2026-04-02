@@ -1,0 +1,19 @@
+{
+  "name": "prompts",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "ai/prompts/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/ai/prompts",
+        "main": "ai/prompts/src/index.ts",
+        "tsConfig": "ai/prompts/tsconfig.lib.json",
+        "assets": ["ai/prompts/*.md"]
+      }
+    }
+  }
+}
