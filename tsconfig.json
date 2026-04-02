@@ -1,6 +1,34 @@
 {
+  "compilerOptions": {
+    "paths": {}
+  },
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": []
+  "references": [
+    {
+      "path": "./ai/core"
+    },
+    {
+      "path": "./ai/functions"
+    },
+    {
+      "path": "./ai/prompts"
+    },
+    {
+      "path": "./ai/tools"
+    },
+    {
+      "path": "./shared/config"
+    },
+    {
+      "path": "./shared/types"
+    },
+    {
+      "path": "./shared/ui"
+    },
+    {
+      "path": "./shared/utils"
+    }
+  ]
 }

@@ -1,4 +1,4 @@
-import { core } from './core';
+import { core } from './core.js';
 
 describe('core', () => {
   it('should work', () => {

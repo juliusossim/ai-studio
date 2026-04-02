@@ -22,8 +22,16 @@ export default [
           allow: [String.raw`^.*/eslint(\.base)?\.config\.[cm]?[jt]s$`],
           depConstraints: [
             {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
+              sourceTag: 'scope:shared',
+              onlyDependOnLibsWithTags: ['scope:shared'],
+            },
+            {
+              sourceTag: 'scope:ai',
+              onlyDependOnLibsWithTags: ['scope:shared', 'scope:ai'],
+            },
+            {
+              sourceTag: 'scope:app',
+              onlyDependOnLibsWithTags: ['scope:shared', 'scope:ai', 'scope:app'],
             },
           ],
         },

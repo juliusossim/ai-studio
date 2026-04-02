@@ -1,4 +1,4 @@
-import { prompts } from './prompts';
+import { prompts } from './prompts.js';
 
 describe('prompts', () => {
   it('should work', () => {

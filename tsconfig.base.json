@@ -18,11 +18,14 @@
     "target": "es2022",
     "customConditions": ["@org/source"],
     "paths": {
-      "@org/types": ["shared/types/src/index.ts"],
-      "@org/utils": ["shared/utils/src/index.ts"],
-      "@org/prompts": ["ai/prompts/src/index.ts"],
+      "@org/config": ["shared/config/src/index.ts"],
       "@org/core": ["ai/core/src/index.ts"],
-      "@org/ui": ["shared/ui/src/index.ts"]
+      "@org/functions": ["ai/functions/src/index.ts"],
+      "@org/prompts": ["ai/prompts/src/index.ts"],
+      "@org/tools": ["ai/tools/src/index.ts"],
+      "@org/types": ["shared/types/src/index.ts"],
+      "@org/ui": ["shared/ui/src/index.ts"],
+      "@org/utils": ["shared/utils/src/index.ts"]
     }
   }
 }

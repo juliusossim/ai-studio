@@ -1,2 +1,10 @@
 packages:
   - 'packages/*'
+  - 'ai/core'
+  - 'ai/functions'
+  - 'ai/prompts'
+  - 'ai/tools'
+  - 'shared/config'
+  - 'shared/types'
+  - 'shared/ui'
+  - 'shared/utils'

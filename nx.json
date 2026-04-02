@@ -67,10 +67,22 @@
   "nxCloudId": "69ce6a9f1fb9b623dc8f5b2e",
   "analytics": true,
   "targetDefaults": {
-    "@nx/js:tsc": {
+    "build": {
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "typecheck": {
+      "cache": true,
+      "dependsOn": ["^typecheck"]
+    },
+    "test": {
+      "cache": true,
+      "dependsOn": ["^build"]
+    },
+    "lint": {
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/eslint.config.mjs"]
     }
   }
 }
