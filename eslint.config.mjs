@@ -30,8 +30,16 @@ export default [
               onlyDependOnLibsWithTags: ['scope:shared', 'scope:ai'],
             },
             {
+              sourceTag: 'scope:ui',
+              onlyDependOnLibsWithTags: ['scope:shared', 'scope:ui'],
+            },
+            {
+              sourceTag: 'scope:feature',
+              onlyDependOnLibsWithTags: ['scope:shared', 'scope:ai', 'scope:ui', 'scope:feature'],
+            },
+            {
               sourceTag: 'scope:app',
-              onlyDependOnLibsWithTags: ['scope:shared', 'scope:ai', 'scope:app'],
+              onlyDependOnLibsWithTags: ['scope:shared', 'scope:ai', 'scope:ui', 'scope:feature', 'scope:app'],
             },
           ],
         },

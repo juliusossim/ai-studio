@@ -1,0 +1,9 @@
+{
+  "name": "feature-chat",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "features/chat/src",
+  "projectType": "library",
+  "tags": ["scope:feature"],
+  "// targets": "to see all targets run: nx show project feature-chat --web",
+  "targets": {}
+}

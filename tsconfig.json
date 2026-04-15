@@ -25,10 +25,40 @@
       "path": "./shared/types"
     },
     {
-      "path": "./shared/ui"
+      "path": "./shared/utils"
     },
     {
-      "path": "./shared/utils"
+      "path": "./shared/api-client"
+    },
+    {
+      "path": "./ui/primitives"
+    },
+    {
+      "path": "./ui/web"
+    },
+    {
+      "path": "./ui/hooks"
+    },
+    {
+      "path": "./ui/native"
+    },
+    {
+      "path": "./features/chat"
+    },
+    {
+      "path": "./features/agents"
+    },
+    {
+      "path": "./features/dashboard"
+    },
+    {
+      "path": "./apps/web"
+    },
+    {
+      "path": "./apps/mobile"
+    },
+    {
+      "path": "./apps/api"
     }
   ]
 }

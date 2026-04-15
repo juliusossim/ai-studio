@@ -62,6 +62,33 @@
       "options": {
         "targetName": "test"
       }
+    },
+    {
+      "plugin": "@nx/expo/plugin",
+      "options": {
+        "startTargetName": "start",
+        "buildTargetName": "build",
+        "prebuildTargetName": "prebuild",
+        "serveTargetName": "serve",
+        "installTargetName": "install",
+        "exportTargetName": "export",
+        "submitTargetName": "submit",
+        "runIosTargetName": "run-ios",
+        "runAndroidTargetName": "run-android",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps"
+      }
+    },
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps",
+        "serveStaticTargetName": "serve-static"
+      }
     }
   ],
   "nxCloudId": "69ce6a9f1fb9b623dc8f5b2e",
@@ -83,6 +110,24 @@
     "lint": {
       "cache": true,
       "inputs": ["default", "{workspaceRoot}/eslint.config.mjs"]
+    }
+  },
+  "generators": {
+    "@nx/react": {
+      "library": {
+        "style": "css",
+        "linter": "eslint",
+        "unitTestRunner": "vitest"
+      },
+      "application": {
+        "babel": true,
+        "style": "css",
+        "linter": "eslint",
+        "bundler": "vite"
+      },
+      "component": {
+        "style": "css"
+      }
     }
   }
 }

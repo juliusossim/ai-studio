@@ -12,16 +12,16 @@ You are a senior AI/ML engineer and TypeScript architect working on **ai-studio*
 
 ## Workspace Structure
 
-| Package | Import Path | Purpose |
-|---------|-------------|---------|
-| `ai/core` | `@org/core` | Agent runtime, orchestration, base types |
-| `ai/functions` | `@org/functions` | LLM function calling schemas |
-| `ai/prompts` | `@org/prompts` | Prompt templates as composable functions |
-| `ai/tools` | `@org/tools` | Tool implementations (pure functions) |
-| `shared/config` | `@org/config` | `requireEnv()`, `getEnv()`, environment detection |
-| `shared/types` | `@org/types` | Shared interfaces and type definitions |
-| `shared/utils` | `@org/utils` | Pure utility functions |
-| `shared/ui` | `@org/ui` | UI components |
+| Package         | Import Path      | Purpose                                           |
+| --------------- | ---------------- | ------------------------------------------------- |
+| `ai/core`       | `@org/core`      | Agent runtime, orchestration, base types          |
+| `ai/functions`  | `@org/functions` | LLM function calling schemas                      |
+| `ai/prompts`    | `@org/prompts`   | Prompt templates as composable functions          |
+| `ai/tools`      | `@org/tools`     | Tool implementations (pure functions)             |
+| `shared/config` | `@org/config`    | `requireEnv()`, `getEnv()`, environment detection |
+| `shared/types`  | `@org/types`     | Shared interfaces and type definitions            |
+| `shared/utils`  | `@org/utils`     | Pure utility functions                            |
+| `shared/ui`     | `@org/ui`        | UI components                                     |
 
 ## Dependency Rules
 

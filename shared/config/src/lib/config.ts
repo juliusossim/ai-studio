@@ -45,9 +45,7 @@ export function requireEnv(key: string): string {
  * @example
  * const { API_URL, API_KEY } = getEnvs('API_URL', 'API_KEY');
  */
-export function getEnvs<K extends string>(
-  ...keys: K[]
-): Record<K, string | undefined> {
+export function getEnvs<K extends string>(...keys: K[]): Record<K, string | undefined> {
   const env = getRuntimeEnv();
   return keys.reduce(
     (acc, key) => {

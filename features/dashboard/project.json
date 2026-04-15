@@ -1,0 +1,9 @@
+{
+  "name": "feature-dashboard",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "features/dashboard/src",
+  "projectType": "library",
+  "tags": ["scope:feature"],
+  "// targets": "to see all targets run: nx show project feature-dashboard --web",
+  "targets": {}
+}

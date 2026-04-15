@@ -1,7 +1,11 @@
+import OpenAI from 'openai';
+import { ChatModel } from 'openai/resources';
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 export interface BaseAgent {
-  model: string;
-  tools: string[];
   messages: ChatCompletionMessageParam[];
+  model?: ChatModel;
+  tools?: OpenAI.Chat.Completions.ChatCompletionTool[];
+  maxTokens?: number;
+  temperature?: number;
 }

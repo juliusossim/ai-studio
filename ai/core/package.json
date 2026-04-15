@@ -16,6 +16,9 @@
     }
   },
   "dependencies": {
+    "@org/config": "workspace:*",
+    "@org/prompts": "workspace:*",
+    "@org/types": "workspace:*",
     "openai": "^6.33.0",
     "tslib": "^2.3.0"
   }

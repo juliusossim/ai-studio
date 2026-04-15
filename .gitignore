@@ -54,3 +54,18 @@ vitest.config.*.timestamp*
 .env.local
 .env.*.local
 test-output
+
+# Expo
+node_modules/
+.expo/
+.yarn/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+cache/

@@ -14,6 +14,11 @@ module.exports = {
   transform: {
     '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
   },
+  moduleNameMapper: {
+    '^@org/config$': '<rootDir>/../../shared/config/src/index.ts',
+    '^@org/prompts$': '<rootDir>/../../ai/prompts/src/index.ts',
+    '^@org/types$': '<rootDir>/../../shared/types/src/index.ts',
+  },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: 'test-output/jest/coverage',
 };
