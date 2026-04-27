@@ -9,6 +9,7 @@ import { OAuthStateRepository } from './repositories/oauth-state.repository';
 import { SessionsRepository } from './repositories/sessions.repository';
 import { UsersRepository } from './repositories/users.repository';
 import { AuthConfigService } from './services/auth-config.service';
+import { AuthOriginProtectionService } from './services/auth-origin-protection.service';
 import { PasswordService } from './services/password.service';
 import { TokenService } from './services/token.service';
 
@@ -17,6 +18,7 @@ import { TokenService } from './services/token.service';
   providers: [
     AuthService,
     AuthConfigService,
+    AuthOriginProtectionService,
     UsersRepository,
     SessionsRepository,
     OAuthStateRepository,

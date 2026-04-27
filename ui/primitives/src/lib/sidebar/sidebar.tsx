@@ -244,11 +244,7 @@ function Sidebar({
   );
 }
 
-function SidebarTrigger({
-  className,
-  onClick,
-  ...props
-}: SidebarTriggerProps): React.ReactElement {
+function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerProps): React.ReactElement {
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -310,10 +306,7 @@ function SidebarInset({ className, ...props }: SidebarInsetProps): React.ReactEl
   );
 }
 
-function SidebarInput({
-  className,
-  ...props
-}: SidebarInputProps): React.ReactElement {
+function SidebarInput({ className, ...props }: SidebarInputProps): React.ReactElement {
   return (
     <Input
       data-slot="sidebar-input"
@@ -346,10 +339,7 @@ function SidebarFooter({ className, ...props }: SidebarFooterProps): React.React
   );
 }
 
-function SidebarSeparator({
-  className,
-  ...props
-}: SidebarSeparatorProps): React.ReactElement {
+function SidebarSeparator({ className, ...props }: SidebarSeparatorProps): React.ReactElement {
   return (
     <Separator
       data-slot="sidebar-separator"
@@ -563,10 +553,7 @@ function SidebarMenuAction({
   );
 }
 
-function SidebarMenuBadge({
-  className,
-  ...props
-}: SidebarMenuBadgeProps): React.ReactElement {
+function SidebarMenuBadge({ className, ...props }: SidebarMenuBadgeProps): React.ReactElement {
   return (
     <div
       data-slot="sidebar-menu-badge"
@@ -633,10 +620,7 @@ function SidebarMenuSub({ className, ...props }: SidebarMenuSubProps): React.Rea
   );
 }
 
-function SidebarMenuSubItem({
-  className,
-  ...props
-}: SidebarMenuSubItemProps): React.ReactElement {
+function SidebarMenuSubItem({ className, ...props }: SidebarMenuSubItemProps): React.ReactElement {
   return (
     <li
       data-slot="sidebar-menu-sub-item"

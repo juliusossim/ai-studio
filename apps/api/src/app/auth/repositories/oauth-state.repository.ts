@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AuthProvider } from '@prisma/client';
 import type { OAuthStateRecord } from '../auth.types';
+import { executePrismaOperation } from '../../database/prisma-exception.mapper';
 import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
@@ -9,16 +10,22 @@ export class OAuthStateRepository {
 
   async create(record: OAuthStateRecord): Promise<OAuthStateRecord> {
     await this.deleteExpired();
-    const created = await this.prisma.oAuthState.create({
-      data: {
-        state: record.state,
-        codeVerifier: record.codeVerifier,
-        redirectUri: record.redirectUri,
-        provider: AuthProvider.google,
-        expiresAt: record.expiresAt,
-        createdAt: record.createdAt,
+    const created = await executePrismaOperation(
+      () =>
+        this.prisma.oAuthState.create({
+          data: {
+            state: record.state,
+            codeVerifier: record.codeVerifier,
+            redirectUri: record.redirectUri,
+            provider: AuthProvider.google,
+            expiresAt: record.expiresAt,
+            createdAt: record.createdAt,
+          },
+        }),
+      {
+        dependencyDetail: 'The OAuth state store is temporarily unavailable.',
       },
-    });
+    );
 
     return {
       state: created.state,
@@ -32,16 +39,28 @@ export class OAuthStateRepository {
 
   async consume(state: string): Promise<OAuthStateRecord | undefined> {
     await this.deleteExpired();
-    const record = await this.prisma.oAuthState.findUnique({
-      where: { state },
-    });
+    const record = await executePrismaOperation(
+      () =>
+        this.prisma.oAuthState.findUnique({
+          where: { state },
+        }),
+      {
+        dependencyDetail: 'The OAuth state store is temporarily unavailable.',
+      },
+    );
     if (!record) {
       return undefined;
     }
 
-    await this.prisma.oAuthState.delete({
-      where: { state },
-    });
+    await executePrismaOperation(
+      () =>
+        this.prisma.oAuthState.delete({
+          where: { state },
+        }),
+      {
+        dependencyDetail: 'The OAuth state store is temporarily unavailable.',
+      },
+    );
 
     return {
       state: record.state,
@@ -54,12 +73,18 @@ export class OAuthStateRepository {
   }
 
   private async deleteExpired(): Promise<void> {
-    await this.prisma.oAuthState.deleteMany({
-      where: {
-        expiresAt: {
-          lte: new Date(),
-        },
+    await executePrismaOperation(
+      () =>
+        this.prisma.oAuthState.deleteMany({
+          where: {
+            expiresAt: {
+              lte: new Date(),
+            },
+          },
+        }),
+      {
+        dependencyDetail: 'The OAuth state store is temporarily unavailable.',
       },
-    });
+    );
   }
 }

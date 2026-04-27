@@ -1,22 +1,38 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { StarRating } from './Star';
-import { expect } from 'storybook/test';
+import { StarRating } from './star-rating';
 
-const meta = {
+const meta: Meta<typeof StarRating> = {
   component: StarRating,
-  title: 'StarRating',
-} satisfies Meta<typeof StarRating>;
+  title: 'Composed/Stars/StarRating',
+  args: {
+    rating: 4.2,
+    showValue: true,
+  },
+};
+
 export default meta;
 
-type Story = StoryObj<typeof StarRating>;
+type Story = StoryObj<typeof meta>;
 
-export const Primary = {
-  args: {},
-} satisfies Story;
+export const Default: Story = {};
 
-export const Heading = {
-  args: {},
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText(/StarRating/gi)).toBeTruthy();
+export const Compact: Story = {
+  args: {
+    rating: 3.7,
+    size: 14,
   },
-} satisfies Story;
+};
+
+export const PerfectScore: Story = {
+  args: {
+    rating: 5,
+  },
+};
+
+export const TenPointScale: Story = {
+  args: {
+    rating: 8.6,
+    maxRating: 10,
+    size: 16,
+  },
+};

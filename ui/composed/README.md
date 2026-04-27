@@ -46,10 +46,38 @@ Current status:
 - imported dumps that still rely on foreign package structure stay isolated until
   they are adapted to `@org/ui-primitives`, `@org/ui-hooks`, `@org/utils`, and
   local `*.types.ts` files
-- see `ISOLATED_COMPOSED.md` for the current review inventory
+- see `STORYBOOK_ALIGNMENT_PLAN.md` for the current Storybook coverage plan
 
 This library was generated with [Nx](https://nx.dev).
 
+## Storybook
+
+Current Storybook commands for `ui-composed` are:
+
+- `pnpm sb:ui`
+  Starts the `ui-composed` Storybook development server.
+- `pnpm sb:ui:build`
+  Builds the static Storybook site for `ui-composed`.
+- `pnpm sb:ui:gen`
+  Generates Storybook stories for eligible `ui-composed` components.
+- `pnpm sb:ui:gen:one -- --componentPath=src/lib/.../component.tsx`
+  Generates a Storybook story for one specific `ui-composed` component.
+
+Current setup notes:
+
+- Storybook is wired through the Nx-inferred `ui-composed:storybook` and
+  `ui-composed:build-storybook` targets.
+- `@storybook/addon-a11y` is installed and enabled.
+- Storybook Essentials are treated as built-in Storybook 10 functionality here,
+  so this library does not carry an external `@storybook/addon-essentials`
+  package.
+
 ## Running unit tests
 
-Run `nx test ui-composed` to execute the unit tests via [Jest](https://jestjs.io).
+Current active validation targets are:
+
+- `pnpm nx run ui-composed:lint`
+- `pnpm nx run ui-composed:typecheck`
+- `pnpm sb:ui:build`
+
+`ui-composed` does not currently have a configured Nx `test` target.

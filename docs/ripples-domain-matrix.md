@@ -29,18 +29,18 @@ Ripples models should be classified into five groups:
 
 ## 2.1 Identity And Access
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `User` | Root Entity | Canonical human identity | none | One base identity for all personas |
-| `AuthIdentity` | Root Entity | Login/provider credential binding | `User` | Supports manual and social auth |
-| `Session` | Root Entity | Auth session lifecycle | `User` | Refresh token / device session |
-| `UserProfile` | Root Entity | Public-facing user profile | `User` | Bio, avatar, social presence |
-| `Role` | Root Entity | Named access role | none | `agent`, `admin`, `creator`, etc. |
-| `Permission` | Root Entity | Fine-grained capability | none | `listing.publish`, `wallet.manage` |
-| `UserRole` | Join Entity | Assigns role to user | `User`, `Role` | May include scope or source |
-| `RolePermission` | Join Entity | Maps role to permission | `Role`, `Permission` | Explicit authorization graph |
-| `Verification` | Root Entity | Verification / trust state | `User` or `Organization` | Should be split where compliance behavior diverges materially |
-| `Device` | Root Entity | Optional client/device trust metadata | `User` | Useful for security and analytics |
+| Model            | Category    | Purpose                               | Owner / Parent           | Notes                                                         |
+| ---------------- | ----------- | ------------------------------------- | ------------------------ | ------------------------------------------------------------- |
+| `User`           | Root Entity | Canonical human identity              | none                     | One base identity for all personas                            |
+| `AuthIdentity`   | Root Entity | Login/provider credential binding     | `User`                   | Supports manual and social auth                               |
+| `Session`        | Root Entity | Auth session lifecycle                | `User`                   | Refresh token / device session                                |
+| `UserProfile`    | Root Entity | Public-facing user profile            | `User`                   | Bio, avatar, social presence                                  |
+| `Role`           | Root Entity | Named access role                     | none                     | `agent`, `admin`, `creator`, etc.                             |
+| `Permission`     | Root Entity | Fine-grained capability               | none                     | `listing.publish`, `wallet.manage`                            |
+| `UserRole`       | Join Entity | Assigns role to user                  | `User`, `Role`           | May include scope or source                                   |
+| `RolePermission` | Join Entity | Maps role to permission               | `Role`, `Permission`     | Explicit authorization graph                                  |
+| `Verification`   | Root Entity | Verification / trust state            | `User` or `Organization` | Should be split where compliance behavior diverges materially |
+| `Device`         | Root Entity | Optional client/device trust metadata | `User`                   | Useful for security and analytics                             |
 
 ### Core constraints
 
@@ -61,13 +61,13 @@ Ripples models should be classified into five groups:
 
 ## 2.2 Organization And Participation
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `Organization` | Root Entity | Canonical business actor | none | Covers agency, developer, supplier, owner company |
-| `OrganizationProfile` | Root Entity | Public organization profile | `Organization` | Branding, description, trust signals |
-| `OrganizationMembership` | Join Entity | User membership in organization | `User`, `Organization` | Carries role and membership state |
-| `Team` | Root Entity | Subdivision inside organization | `Organization` | Sales, creator ops, support |
-| `TeamMembership` | Join Entity | User membership in team | `User`, `Team` | Optional nested role |
+| Model                    | Category    | Purpose                         | Owner / Parent         | Notes                                             |
+| ------------------------ | ----------- | ------------------------------- | ---------------------- | ------------------------------------------------- |
+| `Organization`           | Root Entity | Canonical business actor        | none                   | Covers agency, developer, supplier, owner company |
+| `OrganizationProfile`    | Root Entity | Public organization profile     | `Organization`         | Branding, description, trust signals              |
+| `OrganizationMembership` | Join Entity | User membership in organization | `User`, `Organization` | Carries role and membership state                 |
+| `Team`                   | Root Entity | Subdivision inside organization | `Organization`         | Sales, creator ops, support                       |
+| `TeamMembership`         | Join Entity | User membership in team         | `User`, `Team`         | Optional nested role                              |
 
 ### Core constraints
 
@@ -86,18 +86,18 @@ Ripples models should be classified into five groups:
 
 ## 2.3 Address And Geography
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `Address` | Root Entity | Canonical postal/location address | none | Lightly normalized reusable location object |
-| `AddressAssignment` | Join Entity | Attaches address to a subject | `Address`, polymorphic subject | Supports property, organization, user profile, and future profile roles |
-| `AddressVerification` | Root Entity | Verification workflow for address | `Address` | Separate from subject verification |
-| `GeoPoint` | Value Object | Latitude/longitude coordinate | embedded | Reusable location primitive |
-| `Country` | Root Entity | Country reference data | none | Usually static reference |
-| `Region` | Root Entity | State/province reference | `Country` | Optional normalization |
-| `City` | Root Entity | City reference data | `Region` or `Country` | Useful for search and filters |
-| `Neighborhood` | Root Entity | Local area reference | `City` | Useful for premium discovery |
-| `ServiceArea` | Root Entity | Area served by user/org | `User` or `Organization` | Can be polygon or named areas |
-| `ServiceZone` | Root Entity | Delivery or fulfillment coverage zone | `Organization` | Important for shops and supplier logistics |
+| Model                 | Category     | Purpose                               | Owner / Parent                 | Notes                                                                   |
+| --------------------- | ------------ | ------------------------------------- | ------------------------------ | ----------------------------------------------------------------------- |
+| `Address`             | Root Entity  | Canonical postal/location address     | none                           | Lightly normalized reusable location object                             |
+| `AddressAssignment`   | Join Entity  | Attaches address to a subject         | `Address`, polymorphic subject | Supports property, organization, user profile, and future profile roles |
+| `AddressVerification` | Root Entity  | Verification workflow for address     | `Address`                      | Separate from subject verification                                      |
+| `GeoPoint`            | Value Object | Latitude/longitude coordinate         | embedded                       | Reusable location primitive                                             |
+| `Country`             | Root Entity  | Country reference data                | none                           | Usually static reference                                                |
+| `Region`              | Root Entity  | State/province reference              | `Country`                      | Optional normalization                                                  |
+| `City`                | Root Entity  | City reference data                   | `Region` or `Country`          | Useful for search and filters                                           |
+| `Neighborhood`        | Root Entity  | Local area reference                  | `City`                         | Useful for premium discovery                                            |
+| `ServiceArea`         | Root Entity  | Area served by user/org               | `User` or `Organization`       | Can be polygon or named areas                                           |
+| `ServiceZone`         | Root Entity  | Delivery or fulfillment coverage zone | `Organization`                 | Important for shops and supplier logistics                              |
 
 ### Recommendation
 
@@ -133,20 +133,20 @@ pressure makes it worthwhile.
 
 ## 2.4 Property Domain
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `Property` | Root Entity | Real-world real estate asset | none | Canonical asset, separate from listing |
-| `PropertyOwnership` | Join Entity | Ownership relation | `Property`, `User` / `Organization` | Supports multiple owners |
-| `PropertyMedia` | Root Entity | Media for property | `Property` | Images, videos, floor plans |
-| `PropertyDocument` | Root Entity | Legal/marketing docs | `Property` | Title, permits, brochures |
-| `PropertyDocumentVerification` | Root Entity | Authenticity review for property documents | `PropertyDocument` | Separate from address and identity verification |
-| `PropertyDuplicateCandidate` | Derived / Read Model | Duplicate detection cluster or review signal | derived from `Property` | Supports canonical merge and moderation workflows |
-| `PropertyFeature` | Root Entity or Value Object | Structured physical features | `Property` | Beds, baths, parking, size |
-| `PropertyAmenity` | Root Entity or Join Entity | Amenities | `Property` | Pool, gym, solar, waterfront |
-| `DevelopmentProject` | Root Entity | Developer project umbrella | `Organization` | Estates, towers, phases |
-| `ProjectPhase` | Root Entity | Project lifecycle phase | `DevelopmentProject` | Launch, construction, completed |
-| `PropertyUnit` | Root Entity | Unit inside project/property | `DevelopmentProject` or `Property` | Apartments, suites, lots |
-| `InventoryUnit` | Root Entity | Sellable stock record | `PropertyUnit` | Availability and commercial state |
+| Model                          | Category                    | Purpose                                      | Owner / Parent                      | Notes                                             |
+| ------------------------------ | --------------------------- | -------------------------------------------- | ----------------------------------- | ------------------------------------------------- |
+| `Property`                     | Root Entity                 | Real-world real estate asset                 | none                                | Canonical asset, separate from listing            |
+| `PropertyOwnership`            | Join Entity                 | Ownership relation                           | `Property`, `User` / `Organization` | Supports multiple owners                          |
+| `PropertyMedia`                | Root Entity                 | Media for property                           | `Property`                          | Images, videos, floor plans                       |
+| `PropertyDocument`             | Root Entity                 | Legal/marketing docs                         | `Property`                          | Title, permits, brochures                         |
+| `PropertyDocumentVerification` | Root Entity                 | Authenticity review for property documents   | `PropertyDocument`                  | Separate from address and identity verification   |
+| `PropertyDuplicateCandidate`   | Derived / Read Model        | Duplicate detection cluster or review signal | derived from `Property`             | Supports canonical merge and moderation workflows |
+| `PropertyFeature`              | Root Entity or Value Object | Structured physical features                 | `Property`                          | Beds, baths, parking, size                        |
+| `PropertyAmenity`              | Root Entity or Join Entity  | Amenities                                    | `Property`                          | Pool, gym, solar, waterfront                      |
+| `DevelopmentProject`           | Root Entity                 | Developer project umbrella                   | `Organization`                      | Estates, towers, phases                           |
+| `ProjectPhase`                 | Root Entity                 | Project lifecycle phase                      | `DevelopmentProject`                | Launch, construction, completed                   |
+| `PropertyUnit`                 | Root Entity                 | Unit inside project/property                 | `DevelopmentProject` or `Property`  | Apartments, suites, lots                          |
+| `InventoryUnit`                | Root Entity                 | Sellable stock record                        | `PropertyUnit`                      | Availability and commercial state                 |
 
 ### Core constraints
 
@@ -170,22 +170,22 @@ pressure makes it worthwhile.
 
 ## 2.5 Listing Domain
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `Listing` | Root Entity | Market offer for property or unit | `Property` or `PropertyUnit` | Separate commercial lifecycle |
-| `ListingVersion` | Root Entity | Auditable listing revisions | `Listing` | Optional but recommended |
-| `ListingAssignment` | Join Entity | Assigns participants to listing | `Listing`, `User` / `Organization` | Agent, creator, manager, agency |
-| `ListingPrice` | Root Entity or Value Object | Pricing state | `Listing` | Ask, rent, fees, deposit |
-| `ListingSuitabilityProfile` | Root Entity | Positive suitability and discovery signals | `Listing` | Student-friendly, couple-friendly, working-professional-friendly |
-| `ListingEligibilityPolicy` | Root Entity | Explicit restrictive policy or tenancy rule | `Listing` | Sensitive and reviewable where required |
-| `ListingOccupancyProfile` | Root Entity | Occupancy arrangement and co-living context | `Listing` | Room-only, entire-unit, landlord-on-site, shared occupancy |
-| `ListingPaymentTerms` | Root Entity | Commercial payment structure | `Listing` | Upfront periods, deposits, installments, off-plan schedules |
-| `ListingPromotion` | Root Entity | Boost and promotion settings | `Listing` | Paid boosts, featured placements |
-| `ListingAvailability` | Root Entity | Commercial availability | `Listing` | Active, booked, reserved |
-| `ListingShareProgram` | Root Entity | Creator/affiliate commission program | `Listing` | Share-and-earn rules |
-| `ListingMetrics` | Derived / Read Model | Aggregated listing metrics | `Listing` | Views, saves, lead stats |
-| `ListingTag` | Root Entity or Join Entity | Editorial tag | `Listing` | Luxury, waterfront, urgent |
-| `ListingCollection` | Root Entity | Curated listing set | `Organization` or `User` | Campaigns and collections |
+| Model                       | Category                    | Purpose                                     | Owner / Parent                     | Notes                                                            |
+| --------------------------- | --------------------------- | ------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------- |
+| `Listing`                   | Root Entity                 | Market offer for property or unit           | `Property` or `PropertyUnit`       | Separate commercial lifecycle                                    |
+| `ListingVersion`            | Root Entity                 | Auditable listing revisions                 | `Listing`                          | Optional but recommended                                         |
+| `ListingAssignment`         | Join Entity                 | Assigns participants to listing             | `Listing`, `User` / `Organization` | Agent, creator, manager, agency                                  |
+| `ListingPrice`              | Root Entity or Value Object | Pricing state                               | `Listing`                          | Ask, rent, fees, deposit                                         |
+| `ListingSuitabilityProfile` | Root Entity                 | Positive suitability and discovery signals  | `Listing`                          | Student-friendly, couple-friendly, working-professional-friendly |
+| `ListingEligibilityPolicy`  | Root Entity                 | Explicit restrictive policy or tenancy rule | `Listing`                          | Sensitive and reviewable where required                          |
+| `ListingOccupancyProfile`   | Root Entity                 | Occupancy arrangement and co-living context | `Listing`                          | Room-only, entire-unit, landlord-on-site, shared occupancy       |
+| `ListingPaymentTerms`       | Root Entity                 | Commercial payment structure                | `Listing`                          | Upfront periods, deposits, installments, off-plan schedules      |
+| `ListingPromotion`          | Root Entity                 | Boost and promotion settings                | `Listing`                          | Paid boosts, featured placements                                 |
+| `ListingAvailability`       | Root Entity                 | Commercial availability                     | `Listing`                          | Active, booked, reserved                                         |
+| `ListingShareProgram`       | Root Entity                 | Creator/affiliate commission program        | `Listing`                          | Share-and-earn rules                                             |
+| `ListingMetrics`            | Derived / Read Model        | Aggregated listing metrics                  | `Listing`                          | Views, saves, lead stats                                         |
+| `ListingTag`                | Root Entity or Join Entity  | Editorial tag                               | `Listing`                          | Luxury, waterfront, urgent                                       |
+| `ListingCollection`         | Root Entity                 | Curated listing set                         | `Organization` or `User`           | Campaigns and collections                                        |
 
 ### Core constraints
 
@@ -213,19 +213,19 @@ pressure makes it worthwhile.
 
 ## 2.6 Product Commerce Domain
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `Product` | Root Entity | Sellable non-property item | none | Furniture, materials, appliances |
-| `ProductCategory` | Root Entity | Product classification | none | Furniture, lighting, tiles |
-| `ProductVariant` | Root Entity | SKU-level variant | `Product` | Color, finish, size |
-| `ProductMedia` | Root Entity | Product media | `Product` | Images and videos |
-| `ProductInventory` | Root Entity | Stock state | `ProductVariant` | Optional per location |
-| `ProductPrice` | Root Entity or Value Object | Commercial pricing | `Product` or `ProductVariant` | Retail, promo, bundle |
-| `Brand` | Root Entity | Brand/manufacturer identity | none | Reusable commerce brand |
-| `Supplier` | Root Entity | Seller/supplier actor | `Organization` | Often backed by organization |
-| `ProductAttribute` | Root Entity or Value Object | Flexible product specs | `Product` / `Variant` | Material, finish, weight |
-| `ProductBundle` | Root Entity | Grouped offer | `Organization` | Furniture kits, finishing packs |
-| `ProductReview` | Root Entity | User review | `Product` | Optional in later phase |
+| Model              | Category                    | Purpose                     | Owner / Parent                | Notes                            |
+| ------------------ | --------------------------- | --------------------------- | ----------------------------- | -------------------------------- |
+| `Product`          | Root Entity                 | Sellable non-property item  | none                          | Furniture, materials, appliances |
+| `ProductCategory`  | Root Entity                 | Product classification      | none                          | Furniture, lighting, tiles       |
+| `ProductVariant`   | Root Entity                 | SKU-level variant           | `Product`                     | Color, finish, size              |
+| `ProductMedia`     | Root Entity                 | Product media               | `Product`                     | Images and videos                |
+| `ProductInventory` | Root Entity                 | Stock state                 | `ProductVariant`              | Optional per location            |
+| `ProductPrice`     | Root Entity or Value Object | Commercial pricing          | `Product` or `ProductVariant` | Retail, promo, bundle            |
+| `Brand`            | Root Entity                 | Brand/manufacturer identity | none                          | Reusable commerce brand          |
+| `Supplier`         | Root Entity                 | Seller/supplier actor       | `Organization`                | Often backed by organization     |
+| `ProductAttribute` | Root Entity or Value Object | Flexible product specs      | `Product` / `Variant`         | Material, finish, weight         |
+| `ProductBundle`    | Root Entity                 | Grouped offer               | `Organization`                | Furniture kits, finishing packs  |
+| `ProductReview`    | Root Entity                 | User review                 | `Product`                     | Optional in later phase          |
 
 ### Core constraints
 
@@ -237,20 +237,20 @@ pressure makes it worthwhile.
 
 ## 2.7 Social, Feed, And Content Domain
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `ContentPost` | Root Entity | Canonical social/content object | `User` or `Organization` | Feed-first content unit |
-| `ContentMedia` | Root Entity | Media for content | `ContentPost` | Images, videos, live clips |
-| `FeedItem` | Derived / Read Model | Surface projection for feed | derived | Could be persisted cache |
-| `Comment` | Root Entity | Discussion object | `ContentPost` or entity target | Threadable |
-| `Reaction` | Join Entity | Like/reaction relation | `User`, target entity | May support multiple reaction kinds |
-| `Save` | Join Entity | Save/bookmark relation | `User`, target entity | User-specific interest |
-| `Share` | Root Entity | Trackable share action | `User`, target entity | Supports attribution |
-| `Follow` | Join Entity | Follow relation | `User`, target entity | User follows user/org/creator |
-| `Hashtag` | Root Entity | Hashtag vocabulary | none | Optional normalization |
-| `Mention` | Join Entity | Mention relation | `ContentPost`, target entity | User or organization mention |
-| `Campaign` | Root Entity | Marketing campaign | `Organization` | Ties posts, creators, listings |
-| `ReferralLink` | Root Entity | Share/attribution link | `Listing`, `CreatorProfile`, etc. | Creator and campaign attribution |
+| Model          | Category             | Purpose                         | Owner / Parent                    | Notes                               |
+| -------------- | -------------------- | ------------------------------- | --------------------------------- | ----------------------------------- |
+| `ContentPost`  | Root Entity          | Canonical social/content object | `User` or `Organization`          | Feed-first content unit             |
+| `ContentMedia` | Root Entity          | Media for content               | `ContentPost`                     | Images, videos, live clips          |
+| `FeedItem`     | Derived / Read Model | Surface projection for feed     | derived                           | Could be persisted cache            |
+| `Comment`      | Root Entity          | Discussion object               | `ContentPost` or entity target    | Threadable                          |
+| `Reaction`     | Join Entity          | Like/reaction relation          | `User`, target entity             | May support multiple reaction kinds |
+| `Save`         | Join Entity          | Save/bookmark relation          | `User`, target entity             | User-specific interest              |
+| `Share`        | Root Entity          | Trackable share action          | `User`, target entity             | Supports attribution                |
+| `Follow`       | Join Entity          | Follow relation                 | `User`, target entity             | User follows user/org/creator       |
+| `Hashtag`      | Root Entity          | Hashtag vocabulary              | none                              | Optional normalization              |
+| `Mention`      | Join Entity          | Mention relation                | `ContentPost`, target entity      | User or organization mention        |
+| `Campaign`     | Root Entity          | Marketing campaign              | `Organization`                    | Ties posts, creators, listings      |
+| `ReferralLink` | Root Entity          | Share/attribution link          | `Listing`, `CreatorProfile`, etc. | Creator and campaign attribution    |
 
 ### Core constraints
 
@@ -263,22 +263,22 @@ pressure makes it worthwhile.
 
 ## 2.8 Live Domain
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `LiveSession` | Root Entity | Live event / sales session | `User` or `Organization` | First-class commerce and content unit |
-| `LiveSchedule` | Root Entity | Planned timing metadata | `LiveSession` | Scheduled and recurring logic |
-| `LiveHost` | Join Entity | Host assignment | `LiveSession`, `User` | Can support organizations later |
-| `LiveCoHost` | Join Entity | Co-host assignment | `LiveSession`, `User` | Many possible |
-| `LiveListingSpotlight` | Join Entity | Featured listing/product during live | `LiveSession`, target entity | Important for commerce |
-| `LiveViewerSession` | Root Entity | Viewer attendance record | `LiveSession`, `User` / guest session | Needed for live analytics |
-| `LiveChatMessage` | Root Entity | Live chat message | `LiveSession`, sender | Real-time messaging |
-| `LiveReaction` | Root Entity | Real-time reaction stream | `LiveSession`, sender | Hearts, emojis, etc. |
-| `LiveQuestion` | Root Entity | Audience Q&A | `LiveSession`, sender | May be moderated |
-| `LivePoll` | Root Entity | Poll object | `LiveSession` | Optional later phase |
-| `LiveOffer` | Root Entity | Time-bound commercial offer | `LiveSession` | Pinned offers and urgency |
-| `LiveGift` | Root Entity | Ripple gift during live | `LiveSession`, sender, receiver | Revenue-critical |
-| `LiveReplay` | Root Entity | Replay artifact | `LiveSession` | Playback and discovery |
-| `LiveConversionEvent` | Root Entity | Purchase/inquiry linked to live | `LiveSession`, entity | Ties live to revenue |
+| Model                  | Category    | Purpose                              | Owner / Parent                        | Notes                                 |
+| ---------------------- | ----------- | ------------------------------------ | ------------------------------------- | ------------------------------------- |
+| `LiveSession`          | Root Entity | Live event / sales session           | `User` or `Organization`              | First-class commerce and content unit |
+| `LiveSchedule`         | Root Entity | Planned timing metadata              | `LiveSession`                         | Scheduled and recurring logic         |
+| `LiveHost`             | Join Entity | Host assignment                      | `LiveSession`, `User`                 | Can support organizations later       |
+| `LiveCoHost`           | Join Entity | Co-host assignment                   | `LiveSession`, `User`                 | Many possible                         |
+| `LiveListingSpotlight` | Join Entity | Featured listing/product during live | `LiveSession`, target entity          | Important for commerce                |
+| `LiveViewerSession`    | Root Entity | Viewer attendance record             | `LiveSession`, `User` / guest session | Needed for live analytics             |
+| `LiveChatMessage`      | Root Entity | Live chat message                    | `LiveSession`, sender                 | Real-time messaging                   |
+| `LiveReaction`         | Root Entity | Real-time reaction stream            | `LiveSession`, sender                 | Hearts, emojis, etc.                  |
+| `LiveQuestion`         | Root Entity | Audience Q&A                         | `LiveSession`, sender                 | May be moderated                      |
+| `LivePoll`             | Root Entity | Poll object                          | `LiveSession`                         | Optional later phase                  |
+| `LiveOffer`            | Root Entity | Time-bound commercial offer          | `LiveSession`                         | Pinned offers and urgency             |
+| `LiveGift`             | Root Entity | Ripple gift during live              | `LiveSession`, sender, receiver       | Revenue-critical                      |
+| `LiveReplay`           | Root Entity | Replay artifact                      | `LiveSession`                         | Playback and discovery                |
+| `LiveConversionEvent`  | Root Entity | Purchase/inquiry linked to live      | `LiveSession`, entity                 | Ties live to revenue                  |
 
 ### Core constraints
 
@@ -290,16 +290,16 @@ pressure makes it worthwhile.
 
 ## 2.9 Creator Economy Domain
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `CreatorProfile` | Root Entity | Creator-facing persona/profile | `User` | Optional persona layer |
-| `CreatorProgram` | Root Entity | Enrollment into creator monetization | `CreatorProfile` | Enables payout and policy gating |
-| `PromotionAssignment` | Join Entity | Creator assigned to promote target | `CreatorProfile`, target | Listing/product/campaign |
-| `ReferralAttribution` | Root Entity | Attribution chain for engagement/conversion | target flow | Commerce-critical |
-| `CommissionRule` | Root Entity | Earning formula | `Campaign` / `ListingShareProgram` / platform | Percentage or fixed |
-| `CommissionLedgerEntry` | Root Entity | Earned commission record | `CreatorProfile`, `Transaction` | Must be auditable |
-| `CreatorMetrics` | Derived / Read Model | Aggregated creator performance | `CreatorProfile` | Followers, conversion, engagement |
-| `CreatorReputation` | Derived / Read Model | Trust and quality score | `CreatorProfile` | Anti-fraud and trust weighting |
+| Model                   | Category             | Purpose                                     | Owner / Parent                                | Notes                             |
+| ----------------------- | -------------------- | ------------------------------------------- | --------------------------------------------- | --------------------------------- |
+| `CreatorProfile`        | Root Entity          | Creator-facing persona/profile              | `User`                                        | Optional persona layer            |
+| `CreatorProgram`        | Root Entity          | Enrollment into creator monetization        | `CreatorProfile`                              | Enables payout and policy gating  |
+| `PromotionAssignment`   | Join Entity          | Creator assigned to promote target          | `CreatorProfile`, target                      | Listing/product/campaign          |
+| `ReferralAttribution`   | Root Entity          | Attribution chain for engagement/conversion | target flow                                   | Commerce-critical                 |
+| `CommissionRule`        | Root Entity          | Earning formula                             | `Campaign` / `ListingShareProgram` / platform | Percentage or fixed               |
+| `CommissionLedgerEntry` | Root Entity          | Earned commission record                    | `CreatorProfile`, `Transaction`               | Must be auditable                 |
+| `CreatorMetrics`        | Derived / Read Model | Aggregated creator performance              | `CreatorProfile`                              | Followers, conversion, engagement |
+| `CreatorReputation`     | Derived / Read Model | Trust and quality score                     | `CreatorProfile`                              | Anti-fraud and trust weighting    |
 
 ### Core constraints
 
@@ -311,26 +311,26 @@ pressure makes it worthwhile.
 
 ## 2.10 Wallet, Ripple, Payment, And Transaction Domain
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `Wallet` | Root Entity | Wallet owned by user or organization | `User` or `Organization` | Top-level account container |
-| `WalletAccount` | Root Entity | Currency-specific wallet account | `Wallet` | Supports `RIPPLE` and possibly fiat |
-| `LedgerEntry` | Root Entity | Immutable financial entry | `WalletAccount` | Foundation of financial correctness |
-| `RippleTransfer` | Root Entity | User-to-user Ripple movement | wallet entities | Peer transfer |
-| `GiftTransaction` | Root Entity | Gift event | sender, receiver, wallet entries | Especially live and creator gifting |
-| `RippleReward` | Root Entity | Reward credit | `User` / `CreatorProfile` | Growth incentives and earnings |
-| `RippleSpend` | Root Entity | Spend record | wallet entities | Boosts, purchases, live support |
-| `PaymentMethod` | Root Entity | Funding method | `User` / `Organization` | Card, bank, etc. |
-| `Payment` | Root Entity | Payment attempt/result | `Transaction` or wallet funding | External or internal settlement |
-| `EscrowAccount` | Root Entity | Held funds for transaction | `Transaction` | Controlled release |
-| `EscrowMilestone` | Root Entity | Release condition | `EscrowAccount` | Multi-step release |
-| `Transaction` | Root Entity | Business transaction root | none | Property, product, service, booking |
-| `TransactionItem` | Join Entity | Target items in transaction | `Transaction`, target entity | Listing, unit, product, service |
-| `TransactionParty` | Join Entity | Participants in transaction | `Transaction`, actor | Buyer, seller, agent, creator |
-| `Payout` | Root Entity | External payout request/result | `Wallet` or beneficiary | Creator and seller withdrawals |
-| `Settlement` | Root Entity | Allocation result | `Transaction` | Distribution to parties |
-| `Refund` | Root Entity | Reversal / refund | `Payment` | Full or partial |
-| `Dispute` | Root Entity | Escalation record | `Transaction` / `EscrowAccount` | Trust and compliance |
+| Model              | Category    | Purpose                              | Owner / Parent                   | Notes                               |
+| ------------------ | ----------- | ------------------------------------ | -------------------------------- | ----------------------------------- |
+| `Wallet`           | Root Entity | Wallet owned by user or organization | `User` or `Organization`         | Top-level account container         |
+| `WalletAccount`    | Root Entity | Currency-specific wallet account     | `Wallet`                         | Supports `RIPPLE` and possibly fiat |
+| `LedgerEntry`      | Root Entity | Immutable financial entry            | `WalletAccount`                  | Foundation of financial correctness |
+| `RippleTransfer`   | Root Entity | User-to-user Ripple movement         | wallet entities                  | Peer transfer                       |
+| `GiftTransaction`  | Root Entity | Gift event                           | sender, receiver, wallet entries | Especially live and creator gifting |
+| `RippleReward`     | Root Entity | Reward credit                        | `User` / `CreatorProfile`        | Growth incentives and earnings      |
+| `RippleSpend`      | Root Entity | Spend record                         | wallet entities                  | Boosts, purchases, live support     |
+| `PaymentMethod`    | Root Entity | Funding method                       | `User` / `Organization`          | Card, bank, etc.                    |
+| `Payment`          | Root Entity | Payment attempt/result               | `Transaction` or wallet funding  | External or internal settlement     |
+| `EscrowAccount`    | Root Entity | Held funds for transaction           | `Transaction`                    | Controlled release                  |
+| `EscrowMilestone`  | Root Entity | Release condition                    | `EscrowAccount`                  | Multi-step release                  |
+| `Transaction`      | Root Entity | Business transaction root            | none                             | Property, product, service, booking |
+| `TransactionItem`  | Join Entity | Target items in transaction          | `Transaction`, target entity     | Listing, unit, product, service     |
+| `TransactionParty` | Join Entity | Participants in transaction          | `Transaction`, actor             | Buyer, seller, agent, creator       |
+| `Payout`           | Root Entity | External payout request/result       | `Wallet` or beneficiary          | Creator and seller withdrawals      |
+| `Settlement`       | Root Entity | Allocation result                    | `Transaction`                    | Distribution to parties             |
+| `Refund`           | Root Entity | Reversal / refund                    | `Payment`                        | Full or partial                     |
+| `Dispute`          | Root Entity | Escalation record                    | `Transaction` / `EscrowAccount`  | Trust and compliance                |
 
 ### Core constraints
 
@@ -353,19 +353,19 @@ It must be derivable from ledger entries or safely denormalized from them.
 
 ## 2.11 Trending, Recommendation, And Analytics Domain
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `BehaviorEvent` | Root Entity | Canonical behavioral event stream | actor / session | Foundation of trending and analytics |
-| `FeedImpression` | Root Entity | Feed delivery event | user/session + target entity | Exposure logging |
-| `ContentInteraction` | Derived / Read Model or Root | Normalized interaction projection | target entity | May stay derived or be persisted |
-| `TrendSignal` | Derived / Read Model | Rolling signal aggregate | entity + window | 5m, 1h, 24h, 7d |
-| `TrendingSnapshot` | Derived / Read Model | Ranked cached surface output | context + time window | Homepage/feed/search |
-| `LiveTrendMetrics` | Derived / Read Model | Live-specific trend metrics | `LiveSession` | Viewer growth, watch time, gifts |
-| `CreatorTrendMetrics` | Derived / Read Model | Creator-specific trend metrics | `CreatorProfile` | Follower velocity, conversion |
-| `RecommendationProfile` | Root Entity or Derived | Personalization state | `User` | Feature vector / preference state |
-| `PreferenceSignal` | Root Entity | Explicit or implicit preference | `User` | Search, save, view, purchase |
-| `SavedSearch` | Root Entity | Saved search preference | `User` | Alertable query |
-| `AlertSubscription` | Root Entity | Notification subscription | `User` | Triggered on updates |
+| Model                   | Category                     | Purpose                           | Owner / Parent               | Notes                                |
+| ----------------------- | ---------------------------- | --------------------------------- | ---------------------------- | ------------------------------------ |
+| `BehaviorEvent`         | Root Entity                  | Canonical behavioral event stream | actor / session              | Foundation of trending and analytics |
+| `FeedImpression`        | Root Entity                  | Feed delivery event               | user/session + target entity | Exposure logging                     |
+| `ContentInteraction`    | Derived / Read Model or Root | Normalized interaction projection | target entity                | May stay derived or be persisted     |
+| `TrendSignal`           | Derived / Read Model         | Rolling signal aggregate          | entity + window              | 5m, 1h, 24h, 7d                      |
+| `TrendingSnapshot`      | Derived / Read Model         | Ranked cached surface output      | context + time window        | Homepage/feed/search                 |
+| `LiveTrendMetrics`      | Derived / Read Model         | Live-specific trend metrics       | `LiveSession`                | Viewer growth, watch time, gifts     |
+| `CreatorTrendMetrics`   | Derived / Read Model         | Creator-specific trend metrics    | `CreatorProfile`             | Follower velocity, conversion        |
+| `RecommendationProfile` | Root Entity or Derived       | Personalization state             | `User`                       | Feature vector / preference state    |
+| `PreferenceSignal`      | Root Entity                  | Explicit or implicit preference   | `User`                       | Search, save, view, purchase         |
+| `SavedSearch`           | Root Entity                  | Saved search preference           | `User`                       | Alertable query                      |
+| `AlertSubscription`     | Root Entity                  | Notification subscription         | `User`                       | Triggered on updates                 |
 
 ### Core constraints
 
@@ -388,45 +388,45 @@ The system should support trending for:
 
 ## 2.12 Trust, Compliance, And Moderation Domain
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `KycProfile` | Root Entity | Individual identity compliance | `User` | Wallet and payout gating |
-| `KybProfile` | Root Entity | Business compliance | `Organization` | Enterprise onboarding |
-| `IdentityDocument` | Root Entity | Uploaded identity docs | `KycProfile` | Passport, ID, etc. |
-| `BusinessDocument` | Root Entity | Uploaded org docs | `KybProfile` | CAC/incorporation/tax docs |
-| `License` | Root Entity | Professional license | `User` / `Organization` | Agent, broker, developer permits |
-| `OwnershipProof` | Root Entity | Property ownership evidence | `PropertyOwnership` | Important for trust |
-| `ModerationCase` | Root Entity | Moderation workflow | target entity | Content, listing, user, live |
-| `FraudSignal` | Root Entity | Risk or abuse signal | target entity | Device, wallet, user, listing |
-| `AuditLog` | Root Entity | Immutable action audit | any critical domain | Admin and finance support |
+| Model              | Category    | Purpose                        | Owner / Parent          | Notes                            |
+| ------------------ | ----------- | ------------------------------ | ----------------------- | -------------------------------- |
+| `KycProfile`       | Root Entity | Individual identity compliance | `User`                  | Wallet and payout gating         |
+| `KybProfile`       | Root Entity | Business compliance            | `Organization`          | Enterprise onboarding            |
+| `IdentityDocument` | Root Entity | Uploaded identity docs         | `KycProfile`            | Passport, ID, etc.               |
+| `BusinessDocument` | Root Entity | Uploaded org docs              | `KybProfile`            | CAC/incorporation/tax docs       |
+| `License`          | Root Entity | Professional license           | `User` / `Organization` | Agent, broker, developer permits |
+| `OwnershipProof`   | Root Entity | Property ownership evidence    | `PropertyOwnership`     | Important for trust              |
+| `ModerationCase`   | Root Entity | Moderation workflow            | target entity           | Content, listing, user, live     |
+| `FraudSignal`      | Root Entity | Risk or abuse signal           | target entity           | Device, wallet, user, listing    |
+| `AuditLog`         | Root Entity | Immutable action audit         | any critical domain     | Admin and finance support        |
 
 ---
 
 ## 2.13 CRM, Messaging, And Conversion Domain
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `Lead` | Root Entity | Qualified or raw prospect | listing/product/live source | Core commercial object |
-| `Inquiry` | Root Entity | Contact or interest event | target entity | May become lead |
-| `ViewingAppointment` | Root Entity | Property viewing booking | `Listing` / `Property` | Time-based scheduling |
-| `Conversation` | Root Entity | Messaging thread | participants | Could be listing-anchored |
-| `Message` | Root Entity | Message in thread | `Conversation` | Text/media/system |
-| `Deal` | Root Entity | Pipeline / negotiation record | `Lead` / `Transaction` | Sales workflow |
-| `PipelineStage` | Root Entity | Stage taxonomy | `Organization` or platform | Qualified, negotiating, closed |
-| `Task` | Root Entity | Follow-up task | user/org owner | CRM workflow |
-| `Reminder` | Root Entity | Timed reminder | task/conversation/lead | Optional scheduling |
-| `Note` | Root Entity | Internal note | lead/deal/listing | Agent and team support |
+| Model                | Category    | Purpose                       | Owner / Parent              | Notes                          |
+| -------------------- | ----------- | ----------------------------- | --------------------------- | ------------------------------ |
+| `Lead`               | Root Entity | Qualified or raw prospect     | listing/product/live source | Core commercial object         |
+| `Inquiry`            | Root Entity | Contact or interest event     | target entity               | May become lead                |
+| `ViewingAppointment` | Root Entity | Property viewing booking      | `Listing` / `Property`      | Time-based scheduling          |
+| `Conversation`       | Root Entity | Messaging thread              | participants                | Could be listing-anchored      |
+| `Message`            | Root Entity | Message in thread             | `Conversation`              | Text/media/system              |
+| `Deal`               | Root Entity | Pipeline / negotiation record | `Lead` / `Transaction`      | Sales workflow                 |
+| `PipelineStage`      | Root Entity | Stage taxonomy                | `Organization` or platform  | Qualified, negotiating, closed |
+| `Task`               | Root Entity | Follow-up task                | user/org owner              | CRM workflow                   |
+| `Reminder`           | Root Entity | Timed reminder                | task/conversation/lead      | Optional scheduling            |
+| `Note`               | Root Entity | Internal note                 | lead/deal/listing           | Agent and team support         |
 
 ---
 
 ## 2.14 Notifications
 
-| Model | Category | Purpose | Owner / Parent | Notes |
-| --- | --- | --- | --- | --- |
-| `Notification` | Root Entity | User-facing notification | `User` | In-app and delivery source |
-| `NotificationPreference` | Root Entity | Channel and event preferences | `User` | Email, push, SMS, in-app |
-| `DeliveryAttempt` | Root Entity | Delivery outcome | `Notification` | Email/push transport record |
-| `NotificationTemplate` | Root Entity | Reusable template | platform | Localized and typed templates |
+| Model                    | Category    | Purpose                       | Owner / Parent | Notes                         |
+| ------------------------ | ----------- | ----------------------------- | -------------- | ----------------------------- |
+| `Notification`           | Root Entity | User-facing notification      | `User`         | In-app and delivery source    |
+| `NotificationPreference` | Root Entity | Channel and event preferences | `User`         | Email, push, SMS, in-app      |
+| `DeliveryAttempt`        | Root Entity | Delivery outcome              | `Notification` | Email/push transport record   |
+| `NotificationTemplate`   | Root Entity | Reusable template             | platform       | Localized and typed templates |
 
 ---
 

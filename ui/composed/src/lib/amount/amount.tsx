@@ -8,7 +8,9 @@ function calculateReferencePrice({
   increment,
   originalPrice,
   price,
-}: Readonly<Pick<AmountProps, 'discount' | 'increment' | 'originalPrice' | 'price'>>): number | null {
+}: Readonly<Pick<AmountProps, 'discount' | 'increment' | 'originalPrice' | 'price'>>):
+  | number
+  | null {
   if (typeof originalPrice === 'number' && originalPrice > 0) {
     return originalPrice;
   }

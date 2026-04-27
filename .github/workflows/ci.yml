@@ -6,6 +6,10 @@ on:
       - main
   pull_request:
 
+env:
+  SENTRY_ENVIRONMENT: ci
+  SENTRY_RELEASE: ${{ github.sha }}
+
 permissions:
   actions: read
   contents: read

@@ -13,10 +13,7 @@ import { useFormContext } from 'react-hook-form';
 import type { FormTextareaProps } from './form-textarea.types';
 
 export const FormTextarea = forwardRef<HTMLTextAreaElement, FormTextareaProps>(
-  function FormTextarea(
-    { name, label, description, required, ...props },
-    ref,
-  ): ReactElement {
+  function FormTextarea({ name, label, description, required, ...props }, ref): ReactElement {
     const form = useFormContext();
 
     return (

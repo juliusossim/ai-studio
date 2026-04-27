@@ -23,9 +23,30 @@ export function createAuthClientStub(overrides: Partial<RipplesApiClient> = {}):
   return {
     completeGoogleOAuth: async () => testAuthResponse,
     createProperty: async () => testProperty,
+    abortMediaUpload: async () => ({ success: true }),
+    completeMediaUpload: async () => ({
+      id: 'media_asset_complete',
+      mimeType: 'image/jpeg',
+      originalName: 'listing.jpg',
+      source: 'device',
+      status: 'ready',
+      type: 'image',
+      url: 'https://example.com/uploads/listing.jpg',
+    }),
     getFeed: async () => testFeedResponse,
     getMe: async () => testAuthResponse.user,
     getProperties: async () => [testProperty],
+    initiateMediaUpload: async () => ({
+      mediaAssetId: 'media_asset_initiated',
+      upload: {
+        expiresAt: new Date('2026-04-15T00:10:00.000Z'),
+        headers: {
+          'content-type': 'image/jpeg',
+        },
+        method: 'PUT',
+        url: 'https://storage.example.com/upload',
+      },
+    }),
     likeProperty: async () => ({ property: testProperty, event: testEvent('like_property') }),
     loginManual: async () => testAuthResponse,
     logout: async () => ({ success: true }),
@@ -40,9 +61,11 @@ export function createAuthClientStub(overrides: Partial<RipplesApiClient> = {}):
     }),
     uploadMedia: async (files) =>
       files.map((file) => ({
+        id: `media_asset_${file.name}`,
         mimeType: file.type,
         originalName: file.name,
         source: 'device' as const,
+        status: 'ready' as const,
         type: file.type.startsWith('video/') ? 'video' : 'image',
         url: `https://example.com/uploads/${file.name}`,
       })),

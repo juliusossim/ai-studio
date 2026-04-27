@@ -21,9 +21,11 @@ export function ErrorMessage({
       )}
     >
       <div className="flex max-w-1/2 flex-col items-center gap-4">
-        {imageSrc ? <img alt={imageAlt} className="h-28 w-28 object-contain" src={imageSrc} /> : null}
+        {imageSrc ? (
+          <img alt={imageAlt} className="h-28 w-28 object-contain" src={imageSrc} />
+        ) : null}
         {children ? (
-          children as ReactElement
+          (children as ReactElement)
         ) : (
           <Item className="border-fuchsia-200 bg-background/70" variant="outline">
             <ItemContent>

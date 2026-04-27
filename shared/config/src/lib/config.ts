@@ -1,9 +1,5 @@
 type EnvRecord = Record<string, string | undefined>;
 
-interface ImportMetaWithEnv {
-  env?: EnvRecord;
-}
-
 /**
  * Resolves environment variables from the current runtime:
  * - Node.js / server-side: reads from `process.env`
@@ -15,9 +11,10 @@ function getRuntimeEnv(): EnvRecord {
   if (typeof process !== 'undefined' && process.env) {
     return process.env as EnvRecord;
   }
-  // Vite client-side (import.meta.env is statically replaced at build time)
-  if (import.meta !== undefined && (import.meta as ImportMetaWithEnv).env) {
-    return (import.meta as ImportMetaWithEnv).env as EnvRecord;
+  // Vite client-side. Indirect eval keeps this file parse-safe in CommonJS-based test runners.
+  const importMetaEnv = readImportMetaEnv();
+  if (importMetaEnv) {
+    return importMetaEnv;
   }
   return {};
 }
@@ -55,8 +52,58 @@ export function getEnvs<K extends string>(...keys: K[]): Record<K, string | unde
  * `"true"` or `"1"` (case-insensitive).
  */
 export function getEnvFlag(key: string): boolean {
-  const val = getEnv(key)?.toLowerCase();
-  return val === 'true' || val === '1';
+  return getEnvBoolean(key, false) ?? false;
+}
+
+export function getEnvBoolean(key: string, fallback?: boolean): boolean | undefined {
+  const value = getEnv(key)?.trim().toLowerCase();
+  if (!value) {
+    return fallback;
+  }
+
+  if (value === 'true' || value === '1') {
+    return true;
+  }
+
+  if (value === 'false' || value === '0') {
+    return false;
+  }
+
+  return fallback;
+}
+
+export function getEnvNumber(key: string, fallback?: number): number | undefined {
+  const value = getEnv(key);
+  if (!value) {
+    return fallback;
+  }
+
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+export function getEnvInteger(key: string, fallback?: number): number | undefined {
+  const value = getEnv(key);
+  if (!value) {
+    return fallback;
+  }
+
+  const parsed = Number.parseInt(value, 10);
+  return Number.isNaN(parsed) ? fallback : parsed;
+}
+
+export function getEnvList(key: string, fallback: readonly string[] = []): string[] {
+  const value = getEnv(key);
+  if (!value) {
+    return [...fallback];
+  }
+
+  const normalized = value
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0);
+
+  return normalized.length > 0 ? normalized : [...fallback];
 }
 
 /**
@@ -78,4 +125,12 @@ export function isDevelopment(): boolean {
 
 export function isTest(): boolean {
   return getEnvironment() === 'test';
+}
+
+function readImportMetaEnv(): EnvRecord | undefined {
+  try {
+    return (0, eval)('import.meta.env') as EnvRecord | undefined;
+  } catch {
+    return undefined;
+  }
 }

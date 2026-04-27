@@ -27,6 +27,75 @@ enum MediaType {
   video
 }
 
+enum MediaAssetIntent {
+  listing
+  catalog
+  post
+  profile
+  event_cover
+  live
+}
+
+enum MediaAssetStatus {
+  pending_upload
+  uploaded
+  processing
+  ready
+  rejected
+  deleted
+}
+
+enum MediaModerationStatus {
+  pending
+  approved
+  flagged
+  rejected
+}
+
+enum StorageProvider {
+  s3
+}
+
+enum MediaAssetSource {
+  device
+  dropbox
+  google_drive
+  direct_url
+  generated
+}
+
+enum MediaDerivativeRole {
+  thumbnail
+  preview
+  poster
+  feed_card
+  gallery
+  video_720
+}
+
+enum PropertyMediaRole {
+  cover
+  gallery
+}
+
+enum UserProfileMediaRole {
+  avatar
+  banner
+  gallery
+}
+
+enum OrganizationMediaRole {
+  logo
+  banner
+  gallery
+}
+
+enum ContentMediaRole {
+  cover
+  gallery
+  inline
+}
+
 enum UserSystemRole {
   user
   admin
@@ -269,17 +338,122 @@ model OAuthState {
 
   @@index([expiresAt])
 }
-model PropertyMedia {
-  id        String   @id @default(uuid()) @db.Uuid
-  propertyId String  @db.Uuid
-  url       String   @db.VarChar(2048)
-  type      MediaType
-  alt       String   @db.VarChar(240)
-  sortOrder Int
-  property  Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+model MediaAsset {
+  id               String                @id @default(uuid()) @db.Uuid
+  ownerUserId      String                @db.Uuid
+  intent           MediaAssetIntent
+  type             MediaType
+  source           MediaAssetSource
+  storageProvider  StorageProvider
+  bucket           String                @db.VarChar(160)
+  objectKey        String                @db.VarChar(1024)
+  status           MediaAssetStatus      @default(pending_upload)
+  mimeType         String                @db.VarChar(255)
+  verifiedFormat   String?               @db.VarChar(40)
+  sizeBytes        BigInt?
+  checksum         String?               @db.VarChar(255)
+  width            Int?
+  height           Int?
+  durationMs       Int?
+  blurhash         String?               @db.VarChar(255)
+  moderationStatus MediaModerationStatus @default(pending)
+  originalName     String?               @db.VarChar(255)
+  publicUrl        String?               @db.VarChar(2048)
+  rejectionReason  String?               @db.VarChar(500)
+  processedAt      DateTime?
+  deletedAt        DateTime?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  ownerUser        User                  @relation(fields: [ownerUserId], references: [id], onDelete: Restrict)
+  derivatives      MediaDerivative[]
+  propertyLinks    PropertyMediaAttachment[]
+  userProfileLinks UserProfileMediaAttachment[]
+  organizationLinks OrganizationMediaAttachment[]
+  contentLinks     ContentMediaAttachment[]
+
+  @@index([ownerUserId, intent, status])
+  @@index([status, createdAt])
+  @@unique([storageProvider, bucket, objectKey])
+}
+
+model MediaDerivative {
+  id          String              @id @default(uuid()) @db.Uuid
+  mediaAssetId String             @db.Uuid
+  role        MediaDerivativeRole
+  bucket      String              @db.VarChar(160)
+  objectKey   String              @db.VarChar(1024)
+  mimeType    String              @db.VarChar(255)
+  width       Int?
+  height      Int?
+  sizeBytes   BigInt?
+  createdAt   DateTime            @default(now())
+  mediaAsset  MediaAsset          @relation(fields: [mediaAssetId], references: [id], onDelete: Cascade)
+
+  @@unique([mediaAssetId, role])
+}
+
+model PropertyMediaAttachment {
+  id          String            @id @default(uuid()) @db.Uuid
+  propertyId  String            @db.Uuid
+  mediaAssetId String           @db.Uuid
+  alt         String            @db.VarChar(240)
+  role        PropertyMediaRole @default(gallery)
+  sortOrder   Int
+  property    Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  mediaAsset  MediaAsset        @relation(fields: [mediaAssetId], references: [id], onDelete: Restrict)
 
   @@unique([propertyId, sortOrder])
+  @@unique([propertyId, mediaAssetId])
   @@index([propertyId, sortOrder])
+  @@index([mediaAssetId])
+}
+
+model UserProfileMediaAttachment {
+  id          String               @id @default(uuid()) @db.Uuid
+  userId      String               @db.Uuid
+  mediaAssetId String              @db.Uuid
+  role        UserProfileMediaRole @default(gallery)
+  alt         String               @db.VarChar(240)
+  sortOrder   Int
+  createdAt   DateTime             @default(now())
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mediaAsset  MediaAsset           @relation(fields: [mediaAssetId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, sortOrder])
+  @@index([mediaAssetId])
+  @@index([userId, sortOrder])
+}
+
+model OrganizationMediaAttachment {
+  id             String                @id @default(uuid()) @db.Uuid
+  organizationId String                @db.Uuid
+  mediaAssetId   String                @db.Uuid
+  role           OrganizationMediaRole @default(gallery)
+  alt            String                @db.VarChar(240)
+  sortOrder      Int                   @default(0)
+  createdAt      DateTime              @default(now())
+  organization   Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  mediaAsset     MediaAsset            @relation(fields: [mediaAssetId], references: [id], onDelete: Restrict)
+
+  @@unique([organizationId, sortOrder])
+  @@index([mediaAssetId])
+  @@index([organizationId, sortOrder])
+}
+
+model ContentMediaAttachment {
+  id           String           @id @default(uuid()) @db.Uuid
+  contentPostId String          @db.Uuid
+  mediaAssetId String           @db.Uuid
+  role         ContentMediaRole @default(gallery)
+  alt          String           @db.VarChar(240)
+  sortOrder    Int
+  createdAt    DateTime         @default(now())
+  contentPost  ContentPost      @relation(fields: [contentPostId], references: [id], onDelete: Cascade)
+  mediaAsset   MediaAsset       @relation(fields: [mediaAssetId], references: [id], onDelete: Restrict)
+
+  @@unique([contentPostId, sortOrder])
+  @@index([mediaAssetId])
+  @@index([contentPostId, role, sortOrder])
 }
 
 model User {
@@ -304,6 +478,8 @@ model User {
   follows            Follow[]
   behaviorEvents     BehaviorEvent[]
   feedImpressions    FeedImpression[]
+  mediaAssets        MediaAsset[]
+  profileMediaAttachments UserProfileMediaAttachment[]
 }
 
 model AuthIdentity {
@@ -402,6 +578,7 @@ model Organization {
   memberships        OrganizationMembership[]
   serviceZones       ServiceZone[]
   contentPosts       ContentPost[]
+  mediaAttachments   OrganizationMediaAttachment[]
 }
 
 model OrganizationProfile {
@@ -501,7 +678,7 @@ model Property {
   status             PropertyStatus      @default(active)
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
-  media              PropertyMedia[]
+  mediaAttachments   PropertyMediaAttachment[]
   ownerships         PropertyOwnership[]
   documents          PropertyDocument[]
   listings           Listing[]
@@ -707,6 +884,7 @@ model ContentPost {
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   media              ContentMedia[]
+  mediaAttachments   ContentMediaAttachment[]
   authorUser         User?           @relation(fields: [authorUserId], references: [id], onDelete: SetNull)
   authorOrg          Organization?   @relation(fields: [authorOrgId], references: [id], onDelete: SetNull)
 

@@ -1,23 +1,45 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { BrandBadge } from './BrandBadge';
-import { expect } from 'storybook/test';
-import { defaultBrands } from '../utils/mock';
+import type { ReactElement } from 'react';
+import { BrandBadge } from './brand-badge';
 
-const meta = {
+const sampleBrand = {
+  id: 'atelier-ripple',
+  name: 'Atelier Ripple',
+  description: 'Editorial interiors and staging partner.',
+  logo: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=256&q=80',
+} as const;
+
+const meta: Meta<typeof BrandBadge> = {
   component: BrandBadge,
-  title: 'BrandBadge',
-} satisfies Meta<typeof BrandBadge>;
+  title: 'Composed/Badge/BrandBadge',
+  args: {
+    brand: sampleBrand,
+  },
+  decorators: [
+    (Story: () => ReactElement): ReactElement => (
+      <div className="bg-[linear-gradient(180deg,#f8fafc_0%,#eef3f8_100%)] p-6">{Story()}</div>
+    ),
+  ],
+};
+
 export default meta;
 
-type Story = StoryObj<typeof BrandBadge>;
+type Story = StoryObj<typeof meta>;
 
-export const Primary = {
-  args: { brand: defaultBrands[0] },
-} satisfies Story;
+export const Default: Story = {};
 
-export const Heading = {
-  args: { brand: defaultBrands[0] },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText(/BrandBadge/gi)).toBeTruthy();
+export const WithIconAndLink: Story = {
+  args: {
+    brand: {
+      ...sampleBrand,
+      href: '/partners/atelier-ripple',
+      icon: 'sparkles',
+    },
   },
-} satisfies Story;
+};
+
+export const Interactive: Story = {
+  args: {
+    clickable: true,
+  },
+};

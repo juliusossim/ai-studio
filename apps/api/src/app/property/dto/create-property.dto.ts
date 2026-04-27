@@ -7,14 +7,16 @@ import {
   IsObject,
   IsOptional,
   IsString,
-  IsUrl,
+  IsUUID,
   Matches,
   MaxLength,
   MinLength,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import type { PropertyStatus } from '@org/types';
+import type { PropertyMediaAttachmentRole, PropertyStatus } from '@org/types';
+import { NoControlCharacters } from '../../common/input/no-control-characters.validator';
+import { NormalizeText } from '../../common/input/normalize-text.transform';
 
 const listingStatuses: readonly PropertyStatus[] = [
   'draft',
@@ -23,13 +25,18 @@ const listingStatuses: readonly PropertyStatus[] = [
   'sold',
   'archived',
 ];
+const propertyMediaRoles: readonly PropertyMediaAttachmentRole[] = ['cover', 'gallery'];
 
 export class PropertyLocationDto {
+  @NormalizeText()
+  @NoControlCharacters()
   @IsString()
   @MinLength(1)
   @MaxLength(120)
   city!: string;
 
+  @NormalizeText()
+  @NoControlCharacters()
   @IsString()
   @MinLength(1)
   @MaxLength(120)
@@ -48,31 +55,39 @@ export class PropertyPriceDto {
   @IsNumber()
   amount!: number;
 
+  @NormalizeText({ uppercase: true })
+  @NoControlCharacters()
   @IsString()
   @Matches(/^[a-zA-Z]{3}$/)
   currency!: string;
 }
 
 export class PropertyMediaDto {
-  @IsUrl({ require_tld: false })
-  @MaxLength(2048)
-  url!: string;
+  @IsUUID()
+  mediaAssetId!: string;
 
-  @IsIn(['image', 'video'])
-  type!: 'image' | 'video';
-
+  @NormalizeText()
+  @NoControlCharacters()
   @IsString()
   @MinLength(1)
   @MaxLength(240)
   alt!: string;
+
+  @IsOptional()
+  @IsIn(propertyMediaRoles)
+  role?: PropertyMediaAttachmentRole;
 }
 
 export class CreatePropertyDto {
+  @NormalizeText()
+  @NoControlCharacters()
   @IsString()
   @MinLength(3)
   @MaxLength(160)
   title!: string;
 
+  @NormalizeText({ preserveLineBreaks: true })
+  @NoControlCharacters()
   @IsString()
   @MinLength(10)
   @MaxLength(5000)

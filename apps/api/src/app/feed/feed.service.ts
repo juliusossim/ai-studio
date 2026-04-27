@@ -11,6 +11,7 @@ import type {
   FeedSocialMetadata,
   Property,
 } from '@org/types';
+import { readNonEmptyString, readRecord } from '@org/utils';
 import { EventsService } from '../events/events.service';
 import { PropertyService } from '../property/property.service';
 import { FeedRankingService } from './ranking/feed-ranking.service';
@@ -23,9 +24,9 @@ export class FeedService {
     private readonly feedRankingService: FeedRankingService,
   ) {}
 
-  async getFeed(limit?: string, cursor?: string): Promise<FeedResponse> {
-    const pageSize = this.decodeLimit(limit);
-    const offset = this.decodeCursor(cursor);
+  async getFeed(limit = 20, cursor = 0): Promise<FeedResponse> {
+    const pageSize = limit;
+    const offset = cursor;
     const properties = await this.propertyService.findActive();
     const propertyItems = await Promise.all(
       properties.map((property) => this.toPropertyFeedItem(property)),
@@ -114,7 +115,7 @@ export class FeedService {
 
   private toLiveEventItem(item: FeedItemResponse): FeedItemResponse {
     const metadata = item.content.metadata;
-    const title = this.readString(metadata.title, 'Untitled listing');
+    const title = readNonEmptyString(metadata.title, 'Untitled listing');
     const location = this.readLocationLabel(metadata);
     const content: Content = {
       id: `live-event:${this.readPropertyId(metadata, item.id)}`,
@@ -155,7 +156,7 @@ export class FeedService {
 
   private toTrendingItem(item: FeedItemResponse): FeedItemResponse {
     const metadata = item.content.metadata;
-    const title = this.readString(metadata.title, 'Untitled listing');
+    const title = readNonEmptyString(metadata.title, 'Untitled listing');
     const location = this.readLocationLabel(metadata);
     const content: Content = {
       id: `news:${this.readPropertyId(metadata, item.id)}`,
@@ -339,32 +340,6 @@ export class FeedService {
     };
   }
 
-  private decodeCursor(cursor?: string): number {
-    if (!cursor) {
-      return 0;
-    }
-
-    const offset = Number.parseInt(cursor, 10);
-    if (Number.isNaN(offset) || offset < 0) {
-      return 0;
-    }
-
-    return offset;
-  }
-
-  private decodeLimit(limit?: string): number {
-    if (!limit) {
-      return 20;
-    }
-
-    const pageSize = Number.parseInt(limit, 10);
-    if (Number.isNaN(pageSize)) {
-      return 20;
-    }
-
-    return Math.min(Math.max(pageSize, 1), 50);
-  }
-
   private toDisplayName(value: string): string {
     return value
       .split(/[-_\s]+/)
@@ -378,27 +353,17 @@ export class FeedService {
   }
 
   private readLocationLabel(metadata: Record<string, unknown>): string {
-    const location = this.readRecord(metadata.location);
-    const city = this.readString(location.city, 'Unknown city');
-    const country = this.readString(location.country, 'Unknown country');
+    const location = readRecord(metadata.location);
+    const city = readNonEmptyString(location.city, 'Unknown city');
+    const country = readNonEmptyString(location.country, 'Unknown country');
 
     return `${city}, ${country}`;
   }
 
   private readPropertyId(metadata: Record<string, unknown>, fallback: string): string {
-    return this.readString(
+    return readNonEmptyString(
       metadata.propertyId,
       fallback.replace(/^(property|live-event|news):/, ''),
     );
-  }
-
-  private readRecord(value: unknown): Record<string, unknown> {
-    return value && typeof value === 'object' && !Array.isArray(value)
-      ? (value as Record<string, unknown>)
-      : {};
-  }
-
-  private readString(value: unknown, fallback: string): string {
-    return typeof value === 'string' && value.trim().length > 0 ? value : fallback;
   }
 }

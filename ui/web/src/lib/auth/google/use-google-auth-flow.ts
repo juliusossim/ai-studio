@@ -14,7 +14,7 @@ export function useGoogleAuthFlow({
 }: Readonly<GoogleAuthFlowOptions>): GoogleAuthFlowState {
   const { completeGoogleOAuth, startGoogleOAuth } = useSession();
   const [isGoogleConnecting, setIsGoogleConnecting] = useState(false);
-  const [message, setMessage] = useState<string | undefined>();
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const callback = readGoogleCallback();
@@ -35,7 +35,7 @@ export function useGoogleAuthFlow({
 
   const startGoogleAuth = useCallback(async (): Promise<void> => {
     setIsGoogleConnecting(true);
-    setMessage(undefined);
+    setMessage(null);
     try {
       const response = await startGoogleOAuth({
         redirectUri: createGoogleRedirectUri(),
@@ -49,8 +49,10 @@ export function useGoogleAuthFlow({
 
   return {
     isGoogleConnecting,
-    message,
-    setMessage,
+    message: message ?? undefined,
+    setMessage: (nextMessage) => {
+      setMessage(nextMessage ?? null);
+    },
     startGoogleAuth,
   };
 }

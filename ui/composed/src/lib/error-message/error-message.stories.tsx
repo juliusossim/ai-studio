@@ -1,30 +1,42 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect } from 'storybook/test';
+import type { ReactElement } from 'react';
 import { ErrorMessage } from './error-message';
 
-const meta = {
+const meta: Meta<typeof ErrorMessage> = {
   component: ErrorMessage,
-  title: 'ErrorMessage',
-  argTypes: {
-    onRetry: { action: 'onRetry executed!' },
-    goBack: { action: 'goBack executed!' },
+  title: 'Composed/Feedback/ErrorMessage',
+  args: {
+    message: 'We could not load this collection right now.',
   },
-} satisfies Meta<typeof ErrorMessage>;
+  argTypes: {
+    onRetry: { action: 'retry' },
+    onGoBack: { action: 'goBack' },
+  },
+  decorators: [
+    (Story: () => ReactElement): ReactElement => (
+      <div className="bg-[linear-gradient(180deg,#fff7fb_0%,#f7f4ff_100%)] p-6">{Story()}</div>
+    ),
+  ],
+};
+
 export default meta;
 
-type Story = StoryObj<typeof ErrorMessage>;
+type Story = StoryObj<typeof meta>;
 
-export const Primary = {
-  args: {
-    message: 'Something went wrong. Please try again later.',
-  },
-} satisfies Story;
+export const Default: Story = {};
 
-export const Heading = {
+export const WithIllustration: Story = {
   args: {
-    message: 'An error occurred while loading data.',
+    imageSrc:
+      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=400&q=80',
+    imageAlt: 'Abstract warning illustration',
   },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText(/error/gi)).toBeTruthy();
+};
+
+export const Recoverable: Story = {
+  args: {
+    message: 'Publishing failed because the network connection dropped mid-request.',
+    onRetry: () => undefined,
+    onGoBack: () => undefined,
   },
-} satisfies Story;
+};

@@ -3,10 +3,7 @@ import { ValidationMessages } from './validation-messages';
 
 export const CommonSchemas = {
   email: () =>
-    z
-      .string()
-      .min(1, ValidationMessages.required('Email'))
-      .email(ValidationMessages.email),
+    z.string().min(1, ValidationMessages.required('Email')).email(ValidationMessages.email),
   password: (options?: Readonly<{ minLength?: number; maxLength?: number }>) =>
     z
       .string()
@@ -31,15 +28,8 @@ export const CommonSchemas = {
       .string()
       .min(1, ValidationMessages.required('Phone number'))
       .regex(/^\+?[\d\s-()]+$/, ValidationMessages.phoneNumber),
-  url: () =>
-    z
-      .string()
-      .min(1, ValidationMessages.required('URL'))
-      .url(ValidationMessages.url),
-  requiredString: (
-    fieldName: string,
-    options?: Readonly<{ min?: number; max?: number }>,
-  ) =>
+  url: () => z.string().min(1, ValidationMessages.required('URL')).url(ValidationMessages.url),
+  requiredString: (fieldName: string, options?: Readonly<{ min?: number; max?: number }>) =>
     z
       .string()
       .min(1, ValidationMessages.required(fieldName))
@@ -47,10 +37,7 @@ export const CommonSchemas = {
         options?.min ?? 1,
         options?.min ? ValidationMessages.minLength(fieldName, options.min) : '',
       )
-      .max(
-        options?.max ?? 1000,
-        ValidationMessages.maxLength(fieldName, options?.max ?? 1000),
-      ),
+      .max(options?.max ?? 1000, ValidationMessages.maxLength(fieldName, options?.max ?? 1000)),
   optionalString: (options?: Readonly<{ min?: number; max?: number }>) =>
     z
       .string()

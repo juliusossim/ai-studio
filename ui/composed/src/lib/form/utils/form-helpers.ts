@@ -10,9 +10,7 @@ export function createPasswordConfirmationSchema(): z.ZodType<{
   return z
     .object({
       password: CommonSchemas.password(),
-      confirmPassword: z
-        .string()
-        .min(1, ValidationMessages.required('Confirm Password')),
+      confirmPassword: z.string().min(1, ValidationMessages.required('Confirm Password')),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: ValidationMessages.passwordMatch,

@@ -1,13 +1,7 @@
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  cn,
-} from '@org/ui-primitives';
+import { CarouselItem, cn } from '@org/ui-primitives';
 import type { ReactElement } from 'react';
 import { BrandBadge } from '../../badge';
+import { CarouselWrapper } from '../carousel-wrapper';
 import type { BrandCarouselProps } from './brand-carousel.types';
 
 export function BrandCarousel({
@@ -15,7 +9,14 @@ export function BrandCarousel({
   className,
   contentClassName,
   itemClassName,
-  showNavigation = false,
+  showNavigation = true,
+  autoplay = true,
+  autoplayDelay = 3000,
+  stopOnInteraction = false,
+  pauseOnHover = true,
+  playOnHover = false,
+  loop = true,
+  classes,
   badgeVariant = 'outline',
   onBrandClick,
 }: Readonly<BrandCarouselProps>): ReactElement | null {
@@ -24,26 +25,38 @@ export function BrandCarousel({
   }
 
   return (
-    <Carousel className={cn('group w-full', className)} opts={{ align: 'start', dragFree: true, loop: false }}>
-      <CarouselContent className={cn('-ml-2 items-center', contentClassName)}>
-        {brands.map((brand) => (
-          <CarouselItem key={brand.id} className={cn('basis-auto pl-2', itemClassName)}>
-            <BrandBadge
-              brand={brand}
-              clickable={Boolean(onBrandClick)}
-              onClick={onBrandClick}
-              variant={badgeVariant}
-            />
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-
-      {showNavigation ? (
-        <>
-          <CarouselPrevious className="left-0 h-7 w-7 border-white/12 bg-slate-950/70 text-white hover:bg-slate-950/80 hover:text-white" />
-          <CarouselNext className="right-0 h-7 w-7 border-white/12 bg-slate-950/70 text-white hover:bg-slate-950/80 hover:text-white" />
-        </>
-      ) : null}
-    </Carousel>
+    <CarouselWrapper
+      autoplay={autoplay}
+      autoplayDelay={autoplayDelay}
+      classes={{
+        ...classes,
+        content: cn(contentClassName, classes?.content),
+        prev: cn(
+          'left-0 h-7 w-7 border-white/12 bg-slate-950/70 text-white hover:bg-slate-950/80 hover:text-white',
+          classes?.prev,
+        ),
+        next: cn(
+          'right-0 h-7 w-7 border-white/12 bg-slate-950/70 text-white hover:bg-slate-950/80 hover:text-white',
+          classes?.next,
+        ),
+        wrapper: cn(className, classes?.wrapper),
+      }}
+      loop={loop}
+      pauseOnHover={pauseOnHover}
+      playOnHover={playOnHover}
+      showNavigation={showNavigation}
+      stopOnInteraction={stopOnInteraction}
+    >
+      {brands.map((brand) => (
+        <CarouselItem key={brand.id} className={cn('basis-auto pl-2 md:pl-4', itemClassName)}>
+          <BrandBadge
+            brand={brand}
+            clickable={Boolean(onBrandClick)}
+            onClick={onBrandClick}
+            variant={badgeVariant}
+          />
+        </CarouselItem>
+      ))}
+    </CarouselWrapper>
   );
 }

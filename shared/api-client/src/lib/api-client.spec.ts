@@ -148,29 +148,180 @@ describe('createRipplesApiClient', () => {
     });
   });
 
-  it('uploads media files as multipart form data', async () => {
-    const fetcher = createFetcher([
-      {
-        mimeType: 'image/jpeg',
-        originalName: 'listing.jpg',
-        source: 'device',
-        type: 'image',
-        url: 'http://localhost:3000/api/media/uploads/listing.jpg',
-      },
-    ]);
+  it('uploads media files through initiate, signed put, and complete calls', async () => {
+    const fetcher = jest
+      .fn()
+      .mockResolvedValueOnce(
+        jsonResponse({
+          mediaAssetId: 'media-asset-1',
+          upload: {
+            expiresAt: '2026-04-24T12:00:00.000Z',
+            headers: {
+              'cache-control': 'public, max-age=31536000, immutable',
+              'content-type': 'image/jpeg',
+            },
+            method: 'PUT',
+            url: 'https://storage.example.com/upload',
+          },
+        }),
+      )
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: () => Promise.resolve(''),
+      })
+      .mockResolvedValueOnce(
+        jsonResponse({
+          id: 'media-asset-1',
+          mimeType: 'image/jpeg',
+          originalName: 'listing.jpg',
+          source: 'device',
+          status: 'ready',
+          type: 'image',
+          url: 'https://media.ripples.test/uploads/listing.jpg',
+        }),
+      );
     const client = createRipplesApiClient({ fetcher });
     const files = [new File(['binary'], 'listing.jpg', { type: 'image/jpeg' })];
 
-    await client.uploadMedia(files, 'access-token');
+    await client.uploadMedia(files, 'access-token', { intent: 'listing' });
 
-    expect(fetcher).toHaveBeenCalledWith('http://localhost:3000/api/media/uploads', {
+    expect(fetcher).toHaveBeenNthCalledWith(1, 'http://localhost:3000/api/media/uploads/initiate', {
       method: 'POST',
       credentials: 'include',
       headers: {
         accept: 'application/json',
         authorization: 'Bearer access-token',
+        'content-type': 'application/json',
       },
-      body: expect.any(FormData),
+      body: JSON.stringify({
+        intent: 'listing',
+        mimeType: 'image/jpeg',
+        originalName: 'listing.jpg',
+        sizeBytes: 6,
+        source: 'device',
+      }),
+    });
+    expect(fetcher).toHaveBeenNthCalledWith(2, 'https://storage.example.com/upload', {
+      method: 'PUT',
+      credentials: 'omit',
+      headers: {
+        'cache-control': 'public, max-age=31536000, immutable',
+        'content-type': 'image/jpeg',
+      },
+      body: files[0],
+    });
+    expect(fetcher).toHaveBeenNthCalledWith(
+      3,
+      'http://localhost:3000/api/media/uploads/media-asset-1/complete',
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          accept: 'application/json',
+          authorization: 'Bearer access-token',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      },
+    );
+  });
+
+  it('aborts the initiated media upload when the signed upload fails', async () => {
+    const fetcher = jest
+      .fn()
+      .mockResolvedValueOnce(
+        jsonResponse({
+          mediaAssetId: 'media-asset-1',
+          upload: {
+            expiresAt: '2026-04-24T12:00:00.000Z',
+            headers: {
+              'content-type': 'image/jpeg',
+            },
+            method: 'PUT',
+            url: 'https://storage.example.com/upload',
+          },
+        }),
+      )
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 403,
+        text: () => Promise.resolve('Signature expired'),
+      })
+      .mockResolvedValueOnce(jsonResponse({ success: true }));
+    const client = createRipplesApiClient({ fetcher });
+    const files = [new File(['binary'], 'listing.jpg', { type: 'image/jpeg' })];
+
+    await expect(client.uploadMedia(files, 'access-token', { intent: 'listing' })).rejects.toThrow(
+      'Signature expired',
+    );
+
+    expect(fetcher).toHaveBeenNthCalledWith(
+      3,
+      'http://localhost:3000/api/media/uploads/media-asset-1/abort',
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          accept: 'application/json',
+          authorization: 'Bearer access-token',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      },
+    );
+  });
+
+  it('reads problem detail messages from API errors', async () => {
+    const fetcher = createFetcher(
+      { detail: 'Media upload target has expired.', title: 'Upload expired' },
+      { ok: false, status: 400 },
+    );
+    const client = createRipplesApiClient({ fetcher });
+
+    await expect(client.getMe('access-token')).rejects.toThrow('Media upload target has expired.');
+  });
+
+  it('starts explicit media upload sessions when asked directly', async () => {
+    const fetcher = createFetcher({
+      mediaAssetId: 'media-asset-1',
+      upload: {
+        expiresAt: '2026-04-24T12:00:00.000Z',
+        headers: {
+          'content-type': 'image/jpeg',
+        },
+        method: 'PUT',
+        url: 'https://storage.example.com/upload',
+      },
+    });
+    const client = createRipplesApiClient({ fetcher });
+
+    await client.initiateMediaUpload(
+      {
+        intent: 'listing',
+        mimeType: 'image/jpeg',
+        originalName: 'listing.jpg',
+        sizeBytes: 1024,
+        source: 'device',
+      },
+      'access-token',
+    );
+
+    expect(fetcher).toHaveBeenCalledWith('http://localhost:3000/api/media/uploads/initiate', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        accept: 'application/json',
+        authorization: 'Bearer access-token',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        intent: 'listing',
+        mimeType: 'image/jpeg',
+        originalName: 'listing.jpg',
+        sizeBytes: 1024,
+        source: 'device',
+      }),
     });
   });
 
@@ -283,7 +434,7 @@ function authResponse(): {
 function createPropertyRequest(): {
   description: string;
   location: { city: string; country: string };
-  media: [{ alt: string; type: 'image'; url: string }];
+  media: [{ alt: string; mediaAssetId: string }];
   price: { amount: number; currency: string };
   title: string;
 } {
@@ -300,15 +451,14 @@ function createPropertyRequest(): {
     },
     media: [
       {
-        url: 'https://example.com/property.jpg',
-        type: 'image',
+        mediaAssetId: 'media-asset-1',
         alt: 'Waterfront apartment exterior',
       },
     ],
   };
 }
 
-function propertyResponse(): ReturnType<typeof createPropertyRequest> & {
+function propertyResponse(): Omit<ReturnType<typeof createPropertyRequest>, 'media'> & {
   createdAt: string;
   id: string;
   media: [{ alt: string; id: string; type: 'image'; url: string }];
@@ -318,7 +468,14 @@ function propertyResponse(): ReturnType<typeof createPropertyRequest> & {
   return {
     ...createPropertyRequest(),
     id: 'property-1',
-    media: [{ id: 'media-1', ...createPropertyRequest().media[0] }],
+    media: [
+      {
+        id: 'media-asset-1',
+        alt: createPropertyRequest().media[0].alt,
+        type: 'image',
+        url: 'https://example.com/property.jpg',
+      },
+    ],
     status: 'active',
     createdAt: '2026-04-16T00:00:00.000Z',
     updatedAt: '2026-04-16T00:00:00.000Z',

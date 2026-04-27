@@ -5,6 +5,7 @@ import {
   type ExecutionContext,
 } from '@nestjs/common';
 import { AuthService } from '../auth.service';
+import { RequestContextService } from '../../telemetry/request-context/request-context.service';
 import type { AuthenticatedRequest } from '../auth.types';
 
 interface HeaderRequest extends AuthenticatedRequest {
@@ -13,7 +14,10 @@ interface HeaderRequest extends AuthenticatedRequest {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly requestContext: RequestContextService,
+  ) {}
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<HeaderRequest>();
@@ -23,6 +27,7 @@ export class AuthGuard implements CanActivate {
     }
 
     request.user = this.authService.verifyAccessToken(authorization.slice('Bearer '.length));
+    this.requestContext.setUserId(request.user.id);
     return true;
   }
 }

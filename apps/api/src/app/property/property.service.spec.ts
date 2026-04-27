@@ -4,6 +4,37 @@ import type { PropertyRepository } from './property.repository';
 import type { EventsService } from '../events/events.service';
 
 describe('PropertyService', () => {
+  it('creates properties for the authenticated owner', async () => {
+    const property = createProperty();
+    const propertyRepository = {
+      create: jest.fn<Promise<Property>, [unknown, string]>().mockResolvedValue(property),
+    } as Pick<PropertyRepository, 'create'>;
+    const eventsService = {
+      track: jest.fn(),
+    } as Pick<EventsService, 'track'>;
+    const service = new PropertyService(
+      propertyRepository as PropertyRepository,
+      eventsService as EventsService,
+    );
+
+    const input = {
+      title: property.title,
+      description: property.description,
+      location: property.location,
+      price: property.price,
+      media: [
+        {
+          alt: 'Cover image',
+          mediaAssetId: 'media-asset-1',
+        },
+      ],
+      status: property.status,
+    };
+
+    await expect(service.create(input, 'user-1')).resolves.toEqual(property);
+    expect(propertyRepository.create).toHaveBeenCalledWith(input, 'user-1');
+  });
+
   it('tracks property interactions against existing listings', async () => {
     const property = createProperty();
     const event = createEvent();

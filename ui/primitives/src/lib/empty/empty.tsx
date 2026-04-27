@@ -73,10 +73,7 @@ function EmptyTitle({ className, ...props }: EmptyTitleProps): React.ReactElemen
   );
 }
 
-function EmptyDescription({
-  className,
-  ...props
-}: EmptyDescriptionProps): React.ReactElement {
+function EmptyDescription({ className, ...props }: EmptyDescriptionProps): React.ReactElement {
   return (
     <div
       data-slot="empty-description"

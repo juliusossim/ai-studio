@@ -57,13 +57,13 @@ Current models:
 
 Recommended convergence:
 
-| Current | Canonical Direction |
-| --- | --- |
-| `AuthUser` | `User` |
-| `AuthAccount` | `AuthIdentity` |
-| `AuthSession` | `Session` |
+| Current           | Canonical Direction               |
+| ----------------- | --------------------------------- |
+| `AuthUser`        | `User`                            |
+| `AuthAccount`     | `AuthIdentity`                    |
+| `AuthSession`     | `Session`                         |
 | `PropertyListing` | split into `Property` + `Listing` |
-| `PlatformEvent` | evolve into `BehaviorEvent` |
+| `PlatformEvent`   | evolve into `BehaviorEvent`       |
 
 ---
 

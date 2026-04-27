@@ -4,6 +4,8 @@ export * from './form-input';
 export * from './form-select';
 export * from './form-textarea';
 export * from './hooks';
+export * from './searchable-select';
 export * from './search-input';
+export * from './select.types';
 export * from './types';
 export * from './utils';

@@ -8,10 +8,12 @@ module.exports = {
   preset: '../../jest.preset.js',
   testEnvironment: 'node',
   watchman: false,
+  maxWorkers: 1,
   transform: {
     '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
   },
   moduleNameMapper: {
+    '^@org/config$': '<rootDir>/../../shared/config/src/index.ts',
     '^@org/types$': '<rootDir>/../../shared/types/src/index.ts',
   },
   moduleFileExtensions: ['ts', 'js', 'html'],

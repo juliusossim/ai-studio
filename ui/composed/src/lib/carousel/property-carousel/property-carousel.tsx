@@ -33,7 +33,13 @@ export function PropertyCarousel({
   mediaClassName = 'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105',
   buttonClassName,
   showNavigation = true,
-  showIndicators = true,
+  showIndicators = false,
+  autoplay = false,
+  autoplayDelay = 3000,
+  loop = false,
+  pauseOnHover = true,
+  playOnHover = false,
+  stopOnInteraction = false,
   showControls = false,
   autoPlayVideo = false,
 }: Readonly<PropertyCarouselProps>): ReactElement | null {
@@ -49,6 +55,12 @@ export function PropertyCarousel({
       mediaClassName={mediaClassName}
       buttonClassName={buttonClassName}
       showNavigation={showNavigation}
+      autoplay={autoplay}
+      autoplayDelay={autoplayDelay}
+      loop={loop}
+      pauseOnHover={pauseOnHover}
+      playOnHover={playOnHover}
+      stopOnInteraction={stopOnInteraction}
       showIndicators={showIndicators}
       showControls={showControls}
       autoPlayVideo={autoPlayVideo}

@@ -37,6 +37,9 @@
       },
       "test": {
         "executor": "nx:run-commands",
+        "dependsOn": [
+          "prisma-generate"
+        ],
         "options": {
           "command": "jest",
           "cwd": "apps/api"
@@ -128,23 +131,33 @@
     }
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1036.0",
+    "@aws-sdk/s3-request-presigner": "^3.1036.0",
     "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/throttler": "^6.5.0",
+    "@org/config": "workspace:*",
     "@org/types": "workspace:*",
     "@org/utils": "workspace:*",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
+    "@sentry/nestjs": "^10.50.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "cookie": "^1.1.1",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
     "pg": "^8.20.0",
+    "pino": "^10.3.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@nestjs/testing": "^11.0.0",
+    "@types/express": "^5.0.6",
     "prisma": "^7.7.0"
   }
 }

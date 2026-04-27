@@ -37,10 +37,7 @@ function NavigationMenu({
   );
 }
 
-function NavigationMenuList({
-  className,
-  ...props
-}: NavigationMenuListProps): React.ReactElement {
+function NavigationMenuList({ className, ...props }: NavigationMenuListProps): React.ReactElement {
   return (
     <NavigationMenuPrimitive.List
       data-slot="navigation-menu-list"
@@ -50,10 +47,7 @@ function NavigationMenuList({
   );
 }
 
-function NavigationMenuItem({
-  className,
-  ...props
-}: NavigationMenuItemProps): React.ReactElement {
+function NavigationMenuItem({ className, ...props }: NavigationMenuItemProps): React.ReactElement {
   return (
     <NavigationMenuPrimitive.Item
       data-slot="navigation-menu-item"
@@ -122,10 +116,7 @@ function NavigationMenuViewport({
   );
 }
 
-function NavigationMenuLink({
-  className,
-  ...props
-}: NavigationMenuLinkProps): React.ReactElement {
+function NavigationMenuLink({ className, ...props }: NavigationMenuLinkProps): React.ReactElement {
   return (
     <NavigationMenuPrimitive.Link
       data-slot="navigation-menu-link"

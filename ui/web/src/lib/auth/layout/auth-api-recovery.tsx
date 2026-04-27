@@ -59,7 +59,8 @@ export function AuthApiRecovery(): ReactElement | null {
   if (healthStatus === 'healthy') {
     healthMessage = 'API is reachable again. Retry the connection to restore your session.';
   } else if (healthStatus === 'unhealthy') {
-    healthMessage = 'API health check failed. Confirm the backend is running on the configured port.';
+    healthMessage =
+      'API health check failed. Confirm the backend is running on the configured port.';
   }
 
   return (

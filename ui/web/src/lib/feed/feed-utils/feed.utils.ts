@@ -1,4 +1,4 @@
-import { formatCurrency } from '@org/utils';
+import { formatCurrency, readFiniteNumber, readNonEmptyString, readRecord } from '@org/utils';
 import type {
   FeedItemResponse,
   FeedPrimaryReason,
@@ -59,11 +59,11 @@ export function readFeedStreamItem(item: FeedItemResponse): FeedStreamItem {
   const metadata = item.content.metadata;
   const location = readRecord(metadata.location);
   const price = readRecord(metadata.price);
-  const city = readString(location.city, 'Unknown city');
-  const country = readString(location.country, 'Unknown country');
-  const amount = readNumber(price.amount, 0);
-  const currency = readString(price.currency, 'USD');
-  const propertyId = readString(metadata.propertyId, item.id.replace('property:', ''));
+  const city = readNonEmptyString(location.city, 'Unknown city');
+  const country = readNonEmptyString(location.country, 'Unknown country');
+  const amount = readFiniteNumber(price.amount, 0);
+  const currency = readNonEmptyString(price.currency, 'USD');
+  const propertyId = readNonEmptyString(metadata.propertyId, item.id.replace('property:', ''));
   const title = readTitle(item, metadata);
   const statusLabel = readStatusLabel(item, metadata);
   const locationLabel = hasLocation(location) ? `${city}, ${country}` : undefined;
@@ -74,7 +74,7 @@ export function readFeedStreamItem(item: FeedItemResponse): FeedStreamItem {
     authorName: item.social.author.name,
     authorRole: item.social.author.role,
     createdAtLabel: readDateLabel(item.content.createdAt),
-    description: readString(
+    description: readNonEmptyString(
       readBody(item, metadata),
       'A ranked feed post ready for discovery, saves, and shares.',
     ),
@@ -198,20 +198,20 @@ function formatReasonBadge(value: FeedReasonBadge): string {
 
 function readBody(item: FeedItemResponse, metadata: Record<string, unknown>): string {
   if (item.type === 'live-event') {
-    return readString(
+    return readNonEmptyString(
       metadata.summary,
       'Join the latest walkthrough, AMA, or open-home event inside the feed.',
     );
   }
 
   if (item.type !== 'property') {
-    return readString(
+    return readNonEmptyString(
       metadata.summary,
       'A high-signal trend is moving through the market and deserves another look.',
     );
   }
 
-  return readString(metadata.description, 'A ranked property post ready for discovery.');
+  return readNonEmptyString(metadata.description, 'A ranked property post ready for discovery.');
 }
 
 function readMediaItems(item: FeedItemResponse, fallbackAlt: string): FeedStreamItem['mediaItems'] {
@@ -235,14 +235,14 @@ function readMediaItems(item: FeedItemResponse, fallbackAlt: string): FeedStream
 
 function readStatusLabel(item: FeedItemResponse, metadata: Record<string, unknown>): string {
   if (item.type === 'live-event') {
-    return readString(metadata.eventStatus, 'Live');
+    return readNonEmptyString(metadata.eventStatus, 'Live');
   }
 
   if (item.type !== 'property') {
-    return readString(metadata.trendStatus, 'Trending');
+    return readNonEmptyString(metadata.trendStatus, 'Trending');
   }
 
-  return readString(metadata.status, 'active').replace('-', ' ');
+  return readNonEmptyString(metadata.status, 'active').replace('-', ' ');
 }
 
 function readSurfaceLabel(item: FeedItemResponse): string {
@@ -259,28 +259,20 @@ function readSurfaceLabel(item: FeedItemResponse): string {
 
 function readTitle(item: FeedItemResponse, metadata: Record<string, unknown>): string {
   if (item.type === 'live-event') {
-    return readString(metadata.eventTitle, readString(metadata.title, 'Untitled event'));
+    return readNonEmptyString(
+      metadata.eventTitle,
+      readNonEmptyString(metadata.title, 'Untitled event'),
+    );
   }
 
   if (item.type !== 'property') {
-    return readString(metadata.headline, readString(metadata.title, 'Untitled trend'));
+    return readNonEmptyString(
+      metadata.headline,
+      readNonEmptyString(metadata.title, 'Untitled trend'),
+    );
   }
 
-  return readString(metadata.title, 'Untitled listing');
-}
-
-function readRecord(value: unknown): Record<string, unknown> {
-  return value && typeof value === 'object' && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : {};
-}
-
-function readString(value: unknown, fallback: string): string {
-  return typeof value === 'string' && value.trim().length > 0 ? value : fallback;
-}
-
-function readNumber(value: unknown, fallback: number): number {
-  return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
+  return readNonEmptyString(metadata.title, 'Untitled listing');
 }
 
 function readViews(item: FeedItemResponse): number {

@@ -1,6 +1,7 @@
 import type { UseMutationResult } from '@tanstack/react-query';
 import type {
   CreatePropertyRequest,
+  MediaUploadProgressListener,
   Property,
   PropertyInteractionRequest,
   PropertyInteractionResponse,
@@ -13,7 +14,16 @@ export type CreatePropertyMutationResult = UseMutationResult<
   CreatePropertyRequest
 >;
 
-export type UploadMediaMutationResult = UseMutationResult<UploadedMediaAsset[], Error, File[]>;
+export interface UploadMediaMutationInput {
+  readonly files: File[];
+  readonly onProgress?: MediaUploadProgressListener;
+}
+
+export type UploadMediaMutationResult = UseMutationResult<
+  UploadedMediaAsset[],
+  Error,
+  UploadMediaMutationInput
+>;
 
 export type PropertyInteractionName = 'like' | 'save' | 'share' | 'view';
 

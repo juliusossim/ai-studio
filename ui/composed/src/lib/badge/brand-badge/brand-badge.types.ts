@@ -7,6 +7,7 @@ export type BrandBadgeItem = Readonly<{
   description?: string;
   href?: string;
   logoUrl?: string;
+  logo?: string;
   icon?: ReactNode;
   iconPosition?: 'start' | 'end';
   className?: string;

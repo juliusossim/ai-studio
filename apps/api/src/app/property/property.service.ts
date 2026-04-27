@@ -13,8 +13,8 @@ export class PropertyService {
     private readonly eventsService: EventsService,
   ) {}
 
-  create(input: CreatePropertyDto): Promise<Property> {
-    return this.propertyRepository.create(input);
+  create(input: CreatePropertyDto, ownerUserId: string): Promise<Property> {
+    return this.propertyRepository.create(input, ownerUserId);
   }
 
   findMany(): Promise<Property[]> {

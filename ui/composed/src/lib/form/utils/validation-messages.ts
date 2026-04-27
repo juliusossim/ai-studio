@@ -1,10 +1,8 @@
 export const ValidationMessages = {
   required: (field: string): string => `${field} is required`,
   email: 'Please enter a valid email address',
-  minLength: (field: string, min: number): string =>
-    `${field} must be at least ${min} characters`,
-  maxLength: (field: string, max: number): string =>
-    `${field} must not exceed ${max} characters`,
+  minLength: (field: string, min: number): string => `${field} must be at least ${min} characters`,
+  maxLength: (field: string, max: number): string => `${field} must not exceed ${max} characters`,
   minValue: (field: string, min: number): string => `${field} must be at least ${min}`,
   maxValue: (field: string, max: number): string => `${field} must not exceed ${max}`,
   pattern: (field: string): string => `${field} format is invalid`,

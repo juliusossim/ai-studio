@@ -3,7 +3,7 @@ import * as React from 'react';
 const MOBILE_BREAKPOINT = 768;
 
 export function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined);
+  const [isMobile, setIsMobile] = React.useState(false);
 
   React.useEffect(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
@@ -25,5 +25,5 @@ export function useIsMobile(): boolean {
     };
   }, []);
 
-  return Boolean(isMobile);
+  return isMobile;
 }

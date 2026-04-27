@@ -17,34 +17,23 @@ import type {
   DialogTriggerProps,
 } from './dialog.types';
 
-function Dialog({
-  ...props
-}: DialogProps): React.ReactElement {
+function Dialog({ ...props }: DialogProps): React.ReactElement {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
 
-function DialogTrigger({
-  ...props
-}: DialogTriggerProps): React.ReactElement {
+function DialogTrigger({ ...props }: DialogTriggerProps): React.ReactElement {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
 }
 
-function DialogPortal({
-  ...props
-}: DialogPortalProps): React.ReactElement {
+function DialogPortal({ ...props }: DialogPortalProps): React.ReactElement {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
 }
 
-function DialogClose({
-  ...props
-}: DialogCloseProps): React.ReactElement {
+function DialogClose({ ...props }: DialogCloseProps): React.ReactElement {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
 }
 
-function DialogOverlay({
-  className,
-  ...props
-}: DialogOverlayProps): React.ReactElement {
+function DialogOverlay({ className, ...props }: DialogOverlayProps): React.ReactElement {
   return (
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
@@ -122,10 +111,7 @@ function DialogFooter({
   );
 }
 
-function DialogTitle({
-  className,
-  ...props
-}: DialogTitleProps): React.ReactElement {
+function DialogTitle({ className, ...props }: DialogTitleProps): React.ReactElement {
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
@@ -135,10 +121,7 @@ function DialogTitle({
   );
 }
 
-function DialogDescription({
-  className,
-  ...props
-}: DialogDescriptionProps): React.ReactElement {
+function DialogDescription({ className, ...props }: DialogDescriptionProps): React.ReactElement {
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"

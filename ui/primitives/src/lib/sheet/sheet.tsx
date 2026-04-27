@@ -20,28 +20,19 @@ function Sheet({ ...props }: SheetProps): React.ReactElement {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;
 }
 
-function SheetTrigger({
-  ...props
-}: SheetTriggerProps): React.ReactElement {
+function SheetTrigger({ ...props }: SheetTriggerProps): React.ReactElement {
   return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
 }
 
-function SheetClose({
-  ...props
-}: SheetCloseProps): React.ReactElement {
+function SheetClose({ ...props }: SheetCloseProps): React.ReactElement {
   return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
 }
 
-function SheetPortal({
-  ...props
-}: SheetPortalProps): React.ReactElement {
+function SheetPortal({ ...props }: SheetPortalProps): React.ReactElement {
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
 }
 
-function SheetOverlay({
-  className,
-  ...props
-}: SheetOverlayProps): React.ReactElement {
+function SheetOverlay({ className, ...props }: SheetOverlayProps): React.ReactElement {
   return (
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
@@ -109,10 +100,7 @@ function SheetFooter({ className, ...props }: SheetFooterProps): React.ReactElem
   );
 }
 
-function SheetTitle({
-  className,
-  ...props
-}: SheetTitleProps): React.ReactElement {
+function SheetTitle({ className, ...props }: SheetTitleProps): React.ReactElement {
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
@@ -122,10 +110,7 @@ function SheetTitle({
   );
 }
 
-function SheetDescription({
-  className,
-  ...props
-}: SheetDescriptionProps): React.ReactElement {
+function SheetDescription({ className, ...props }: SheetDescriptionProps): React.ReactElement {
   return (
     <SheetPrimitive.Description
       data-slot="sheet-description"

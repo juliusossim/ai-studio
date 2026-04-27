@@ -52,10 +52,7 @@ function ComboboxTrigger({
   );
 }
 
-function ComboboxClear({
-  className,
-  ...props
-}: ComboboxClearProps): React.ReactElement {
+function ComboboxClear({ className, ...props }: ComboboxClearProps): React.ReactElement {
   return (
     <ComboboxPrimitive.Clear
       data-slot="combobox-clear"
@@ -132,10 +129,7 @@ function ComboboxContent({
   );
 }
 
-function ComboboxList({
-  className,
-  ...props
-}: ComboboxListProps): React.ReactElement {
+function ComboboxList({ className, ...props }: ComboboxListProps): React.ReactElement {
   return (
     <ComboboxPrimitive.List
       data-slot="combobox-list"
@@ -148,11 +142,7 @@ function ComboboxList({
   );
 }
 
-function ComboboxItem({
-  className,
-  children,
-  ...props
-}: ComboboxItemProps): React.ReactElement {
+function ComboboxItem({ className, children, ...props }: ComboboxItemProps): React.ReactElement {
   return (
     <ComboboxPrimitive.Item
       data-slot="combobox-item"
@@ -175,19 +165,13 @@ function ComboboxItem({
   );
 }
 
-function ComboboxGroup({
-  className,
-  ...props
-}: ComboboxGroupProps): React.ReactElement {
+function ComboboxGroup({ className, ...props }: ComboboxGroupProps): React.ReactElement {
   return (
     <ComboboxPrimitive.Group data-slot="combobox-group" className={cn(className)} {...props} />
   );
 }
 
-function ComboboxLabel({
-  className,
-  ...props
-}: ComboboxLabelProps): React.ReactElement {
+function ComboboxLabel({ className, ...props }: ComboboxLabelProps): React.ReactElement {
   return (
     <ComboboxPrimitive.GroupLabel
       data-slot="combobox-label"
@@ -204,10 +188,7 @@ function ComboboxCollection({ ...props }: ComboboxCollectionProps): React.ReactE
   return <ComboboxPrimitive.Collection data-slot="combobox-collection" {...props} />;
 }
 
-function ComboboxEmpty({
-  className,
-  ...props
-}: ComboboxEmptyProps): React.ReactElement {
+function ComboboxEmpty({ className, ...props }: ComboboxEmptyProps): React.ReactElement {
   return (
     <ComboboxPrimitive.Empty
       data-slot="combobox-empty"
@@ -220,10 +201,7 @@ function ComboboxEmpty({
   );
 }
 
-function ComboboxSeparator({
-  className,
-  ...props
-}: ComboboxSeparatorProps): React.ReactElement {
+function ComboboxSeparator({ className, ...props }: ComboboxSeparatorProps): React.ReactElement {
   return (
     <ComboboxPrimitive.Separator
       data-slot="combobox-separator"
@@ -233,10 +211,7 @@ function ComboboxSeparator({
   );
 }
 
-function ComboboxChips({
-  className,
-  ...props
-}: ComboboxChipsProps): React.ReactElement {
+function ComboboxChips({ className, ...props }: ComboboxChipsProps): React.ReactElement {
   return (
     <ComboboxPrimitive.Chips
       data-slot="combobox-chips"
@@ -278,10 +253,7 @@ function ComboboxChip({
   );
 }
 
-function ComboboxChipsInput({
-  className,
-  ...props
-}: ComboboxChipsInputProps): React.ReactElement {
+function ComboboxChipsInput({ className, ...props }: ComboboxChipsInputProps): React.ReactElement {
   return (
     <ComboboxPrimitive.Input
       data-slot="combobox-chip-input"

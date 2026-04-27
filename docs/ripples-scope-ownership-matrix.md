@@ -41,19 +41,19 @@ components and web-product modules.
 
 ## 2. Package Roles
 
-| Area | Primary Responsibility | Should Own | Should Not Own |
-| --- | --- | --- | --- |
-| `apps/web` | app composition and route assembly | route entry, auth gating decisions, layout composition, app bootstrapping | reusable business workflows, generic UI libraries |
-| `apps/mobile` | mobile composition surface | mobile route assembly, native navigation, mobile bootstrapping | shared web UI, backend workflows |
-| `apps/api` | durable domain APIs and orchestration | controllers, services, repositories, domain workflows | client rendering concerns |
-| `shared/types` | canonical contracts | domain models, DTOs, enums | UI behavior, fetching |
-| `shared/data` | client data access and mutations | API hooks, query state, client store, mutation orchestration | presentational UI |
-| `shared/api-client` | transport client | typed request builders, fetch wrappers, auth headers | React hooks, UI state |
-| `ui/primitives` | foundation UI layer | shadcn install target, Radix/Base wrappers, generic controls, design-system helpers | route logic, business workflows, domain-specific screens |
-| `ui/composed` | reusable compound UI | generic cards, carousels, grouped controls, shells, presentational compounds | fetching, session logic, route ownership, persona workflows |
-| `ui/web` | reusable web-product layer | auth shell, session/theme providers, protected route shell, reusable web feed/property modules, web-only UI support such as media upload | domain workflows that belong to one product feature or persona |
-| `features/*` | product capability layer | creator dashboard, inquiry/chat flows, live room flows, operator tools, agent workflows | generic web shell concerns, primitive controls |
-| `ai/*` | AI runtime and tooling | prompts, tools, orchestration, reranking and grounded assistive layers | shared business contracts that should live outside the AI layer |
+| Area                | Primary Responsibility                | Should Own                                                                                                                               | Should Not Own                                                  |
+| ------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `apps/web`          | app composition and route assembly    | route entry, auth gating decisions, layout composition, app bootstrapping                                                                | reusable business workflows, generic UI libraries               |
+| `apps/mobile`       | mobile composition surface            | mobile route assembly, native navigation, mobile bootstrapping                                                                           | shared web UI, backend workflows                                |
+| `apps/api`          | durable domain APIs and orchestration | controllers, services, repositories, domain workflows                                                                                    | client rendering concerns                                       |
+| `shared/types`      | canonical contracts                   | domain models, DTOs, enums                                                                                                               | UI behavior, fetching                                           |
+| `shared/data`       | client data access and mutations      | API hooks, query state, client store, mutation orchestration                                                                             | presentational UI                                               |
+| `shared/api-client` | transport client                      | typed request builders, fetch wrappers, auth headers                                                                                     | React hooks, UI state                                           |
+| `ui/primitives`     | foundation UI layer                   | shadcn install target, Radix/Base wrappers, generic controls, design-system helpers                                                      | route logic, business workflows, domain-specific screens        |
+| `ui/composed`       | reusable compound UI                  | generic cards, carousels, grouped controls, shells, presentational compounds                                                             | fetching, session logic, route ownership, persona workflows     |
+| `ui/web`            | reusable web-product layer            | auth shell, session/theme providers, protected route shell, reusable web feed/property modules, web-only UI support such as media upload | domain workflows that belong to one product feature or persona  |
+| `features/*`        | product capability layer              | creator dashboard, inquiry/chat flows, live room flows, operator tools, agent workflows                                                  | generic web shell concerns, primitive controls                  |
+| `ai/*`              | AI runtime and tooling                | prompts, tools, orchestration, reranking and grounded assistive layers                                                                   | shared business contracts that should live outside the AI layer |
 
 ---
 
@@ -73,15 +73,15 @@ Another way to say it:
 
 Examples:
 
-| If the thing is... | Put it in... | Ripples example |
-| --- | --- | --- |
-| a reusable auth page or session shell | `ui/web` | sign-in page, registration page, protected route, auth layout |
-| a reusable web feed module | `ui/web` | generic feed shell, feed state, feed hero, feed filters |
-| a reusable property publishing module | `ui/web` | property create form, property card, media upload composition |
-| a creator workspace | `features/dashboard` | creator analytics home, creator content queue, creator performance view |
-| a conversation or inquiry workflow | `features/chat` | buyer inquiry thread, viewing follow-up, live chat panel |
-| an assistant workflow | `features/agents` | buyer concierge, operator assistant, creator copilot |
-| app bootstrapping or route composition | `apps/web` | route tree, app shell composition, public vs authenticated entry |
+| If the thing is...                     | Put it in...         | Ripples example                                                         |
+| -------------------------------------- | -------------------- | ----------------------------------------------------------------------- |
+| a reusable auth page or session shell  | `ui/web`             | sign-in page, registration page, protected route, auth layout           |
+| a reusable web feed module             | `ui/web`             | generic feed shell, feed state, feed hero, feed filters                 |
+| a reusable property publishing module  | `ui/web`             | property create form, property card, media upload composition           |
+| a creator workspace                    | `features/dashboard` | creator analytics home, creator content queue, creator performance view |
+| a conversation or inquiry workflow     | `features/chat`      | buyer inquiry thread, viewing follow-up, live chat panel                |
+| an assistant workflow                  | `features/agents`    | buyer concierge, operator assistant, creator copilot                    |
+| app bootstrapping or route composition | `apps/web`           | route tree, app shell composition, public vs authenticated entry        |
 
 ---
 
@@ -89,43 +89,43 @@ Examples:
 
 ## 4.1 Belongs In `ui/web`
 
-| Kind of code | Why | Ripples examples |
-| --- | --- | --- |
-| web-only providers and controllers | cross-cutting support for many web surfaces | `AuthProvider`, `WebThemeProvider`, session restore controller |
-| reusable auth screens and shells | not tied to one feature workflow | sign-in page, registration page, auth route states |
-| reusable web feed modules | present across multiple discovery surfaces | feed shell, feed status, feed filtering controls, feed post rendering |
-| reusable property publishing and browsing modules | generic web marketplace UI | property card, create-property form, media upload integration |
-| reusable web error and recovery surfaces | cross-cutting web concerns | error boundary, API recovery state |
+| Kind of code                                      | Why                                         | Ripples examples                                                      |
+| ------------------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------- |
+| web-only providers and controllers                | cross-cutting support for many web surfaces | `AuthProvider`, `WebThemeProvider`, session restore controller        |
+| reusable auth screens and shells                  | not tied to one feature workflow            | sign-in page, registration page, auth route states                    |
+| reusable web feed modules                         | present across multiple discovery surfaces  | feed shell, feed status, feed filtering controls, feed post rendering |
+| reusable property publishing and browsing modules | generic web marketplace UI                  | property card, create-property form, media upload integration         |
+| reusable web error and recovery surfaces          | cross-cutting web concerns                  | error boundary, API recovery state                                    |
 
 ## 4.2 Belongs In `features/*`
 
-| Kind of code | Why | Ripples examples |
-| --- | --- | --- |
-| persona workspaces | specific user outcome and IA | creator dashboard, operator review queue, agent workspace |
-| domain workflows with multiple steps or states | business capability, not generic web support | inquiry flow, viewing scheduling flow, offer-intent flow |
-| real-time product experiences | feature-specific orchestration | live room, host console, audience chat |
-| assistant experiences with explicit task boundaries | feature outcome, not generic shell | buyer concierge workflow, creator content helper |
-| capability-specific metrics and actions | tied to one slice of the product | creator follower insights, inquiry conversion funnel |
+| Kind of code                                        | Why                                          | Ripples examples                                          |
+| --------------------------------------------------- | -------------------------------------------- | --------------------------------------------------------- |
+| persona workspaces                                  | specific user outcome and IA                 | creator dashboard, operator review queue, agent workspace |
+| domain workflows with multiple steps or states      | business capability, not generic web support | inquiry flow, viewing scheduling flow, offer-intent flow  |
+| real-time product experiences                       | feature-specific orchestration               | live room, host console, audience chat                    |
+| assistant experiences with explicit task boundaries | feature outcome, not generic shell           | buyer concierge workflow, creator content helper          |
+| capability-specific metrics and actions             | tied to one slice of the product             | creator follower insights, inquiry conversion funnel      |
 
 ## 4.3 Never Put These In `ui/web`
 
-| Anti-pattern | Where it should go instead | Ripples example |
-| --- | --- | --- |
-| persona-specific business workflow | `features/*` | creator earnings panel |
-| domain orchestration or data workflow | `shared/data` or `apps/api` | inquiry mutation flow, transaction orchestration |
-| generic design-system control | `ui/primitives` | generic `ButtonGroup`, `Tooltip`, `Field` |
-| reusable compound that is not web-specific | `ui/composed` | generic carousel shell, generic summary card |
-| app route entry logic | `apps/web` | public route vs authenticated route composition |
+| Anti-pattern                               | Where it should go instead  | Ripples example                                  |
+| ------------------------------------------ | --------------------------- | ------------------------------------------------ |
+| persona-specific business workflow         | `features/*`                | creator earnings panel                           |
+| domain orchestration or data workflow      | `shared/data` or `apps/api` | inquiry mutation flow, transaction orchestration |
+| generic design-system control              | `ui/primitives`             | generic `ButtonGroup`, `Tooltip`, `Field`        |
+| reusable compound that is not web-specific | `ui/composed`               | generic carousel shell, generic summary card     |
+| app route entry logic                      | `apps/web`                  | public route vs authenticated route composition  |
 
 ## 4.4 Never Put These In `features/*`
 
-| Anti-pattern | Where it should go instead | Ripples example |
-| --- | --- | --- |
-| generic auth shell | `ui/web` | shared sign-in or registration surface |
-| generic feed rendering primitive | `ui/web` or `ui/composed` | feed post shell or reusable feed card chrome |
-| base form controls | `ui/primitives` | input, label, checkbox |
-| transport/fetch/query code | `shared/data` or `shared/api-client` | feed query hook, mutation client |
-| app bootstrapping | `apps/*` | root providers and route assembly |
+| Anti-pattern                     | Where it should go instead           | Ripples example                              |
+| -------------------------------- | ------------------------------------ | -------------------------------------------- |
+| generic auth shell               | `ui/web`                             | shared sign-in or registration surface       |
+| generic feed rendering primitive | `ui/web` or `ui/composed`            | feed post shell or reusable feed card chrome |
+| base form controls               | `ui/primitives`                      | input, label, checkbox                       |
+| transport/fetch/query code       | `shared/data` or `shared/api-client` | feed query hook, mutation client             |
+| app bootstrapping                | `apps/*`                             | root providers and route assembly            |
 
 ---
 

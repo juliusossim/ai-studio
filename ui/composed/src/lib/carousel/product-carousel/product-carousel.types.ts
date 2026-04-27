@@ -1,8 +1,5 @@
 import type { ReactElement } from 'react';
-import type {
-  MediaCarouselClickArgs,
-  MediaCarouselItem,
-} from '../media-carousel';
+import type { MediaCarouselClickArgs, MediaCarouselItem } from '../media-carousel';
 
 export type ProductCarouselProduct = Readonly<{
   id: string;
@@ -21,6 +18,12 @@ export type ProductCarouselProps = Readonly<{
   mediaClassName?: string;
   showNavigation?: boolean;
   showIndicators?: boolean;
+  autoplay?: boolean;
+  autoplayDelay?: number;
+  loop?: boolean;
+  pauseOnHover?: boolean;
+  playOnHover?: boolean;
+  stopOnInteraction?: boolean;
 }>;
 
 export type ProductCarouselClickArgs = Readonly<MediaCarouselClickArgs>;

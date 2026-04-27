@@ -1,5 +1,7 @@
 import { IsIn, IsObject, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import type { EventType } from '@org/types';
+import { NoControlCharacters } from '../../common/input/no-control-characters.validator';
+import { NormalizeText } from '../../common/input/normalize-text.transform';
 
 const eventTypes: readonly EventType[] = [
   'view_property',
@@ -14,11 +16,15 @@ const eventTypes: readonly EventType[] = [
 
 export class CreateEventDto {
   @IsOptional()
+  @NormalizeText({ collapseWhitespace: false })
+  @NoControlCharacters()
   @IsString()
   @MinLength(1)
   @MaxLength(160)
   userId?: string;
 
+  @NormalizeText({ collapseWhitespace: false })
+  @NoControlCharacters()
   @IsString()
   @MinLength(1)
   @MaxLength(160)
@@ -27,11 +33,15 @@ export class CreateEventDto {
   @IsIn(eventTypes)
   type!: EventType;
 
+  @NormalizeText({ collapseWhitespace: false })
+  @NoControlCharacters()
   @IsString()
   @MinLength(1)
   @MaxLength(160)
   entityId!: string;
 
+  @NormalizeText()
+  @NoControlCharacters()
   @IsString()
   @MinLength(1)
   @MaxLength(80)

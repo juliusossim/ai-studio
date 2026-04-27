@@ -29,8 +29,7 @@ export type ComboboxEmptyProps = Readonly<ComboboxPrimitive.Empty.Props>;
 export type ComboboxSeparatorProps = Readonly<ComboboxPrimitive.Separator.Props>;
 
 export type ComboboxChipsProps = Readonly<
-  ComponentPropsWithRef<typeof ComboboxPrimitive.Chips> &
-    ComboboxPrimitive.Chips.Props
+  ComponentPropsWithRef<typeof ComboboxPrimitive.Chips> & ComboboxPrimitive.Chips.Props
 >;
 
 export type ComboboxChipProps = Readonly<

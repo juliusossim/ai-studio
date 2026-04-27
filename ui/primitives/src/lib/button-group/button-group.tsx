@@ -26,11 +26,7 @@ const buttonGroupVariants = cva(
   },
 );
 
-function ButtonGroup({
-  className,
-  orientation,
-  ...props
-}: ButtonGroupProps): React.ReactElement {
+function ButtonGroup({ className, orientation, ...props }: ButtonGroupProps): React.ReactElement {
   return (
     <div
       role="group"

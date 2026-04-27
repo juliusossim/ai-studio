@@ -9,9 +9,7 @@ export type AvatarProps = Readonly<
   }
 >;
 
-export type AvatarImageProps = Readonly<
-  ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
->;
+export type AvatarImageProps = Readonly<ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>>;
 
 export type AvatarFallbackProps = Readonly<
   ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>

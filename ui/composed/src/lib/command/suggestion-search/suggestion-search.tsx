@@ -1,7 +1,4 @@
-import {
-  CommandGroup,
-  CommandItem,
-} from '@org/ui-primitives';
+import { CommandGroup, CommandItem } from '@org/ui-primitives';
 import type { ReactElement } from 'react';
 import { CommandWrapper } from '../command-wrapper';
 import type { SuggestionSearchProps } from './suggestion-search.types';
@@ -40,9 +37,7 @@ export function SuggestionSearch({
                 <div className="ml-2">
                   <div>{item.title}</div>
                   {item.description ? (
-                    <div className="text-sm text-muted-foreground">
-                      {item.description}
-                    </div>
+                    <div className="text-sm text-muted-foreground">{item.description}</div>
                   ) : null}
                 </div>
               </CommandItem>

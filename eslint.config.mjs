@@ -42,6 +42,7 @@ export default [
     ignores: [
       '**/dist',
       '**/out-tsc',
+      '**/.react-router',
       '**/vite.config.*.timestamp*',
       '**/vitest.config.*.timestamp*',
     ],

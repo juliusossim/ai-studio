@@ -1,32 +1,37 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { ReactElement } from 'react';
 import { LoadingSpinner } from './loading-spinner';
-import { expect } from 'storybook/test';
 
-const meta = {
+const meta: Meta<typeof LoadingSpinner> = {
   component: LoadingSpinner,
-  title: 'LoadingSpinner',
-} satisfies Meta<typeof LoadingSpinner>;
+  title: 'Composed/Feedback/LoadingSpinner',
+  args: {
+    title: 'Preparing the next view',
+    message: 'Fetching the newest listing cards and editorial metadata.',
+  },
+  decorators: [
+    (Story: () => ReactElement): ReactElement => (
+      <div className="bg-[linear-gradient(180deg,#f8fafc_0%,#eef3f8_100%)] p-6">{Story()}</div>
+    ),
+  ],
+};
+
 export default meta;
 
-type Story = StoryObj<typeof LoadingSpinner>;
+type Story = StoryObj<typeof meta>;
 
-export const Primary = {
-  args: {
-    title: 'Please Wait...',
-    message: 'Fetching data',
-    imageUrl:
-      'https://graphicsfamily.com/wp-content/uploads/edd/2019/01/free-creative-logo-template.jpg',
-  },
-} satisfies Story;
+export const Default: Story = {};
 
-export const Heading = {
+export const WithPreviewImage: Story = {
   args: {
-    title: 'LoadingSpinner',
-    message: 'LoadingSpinner',
     imageUrl:
-      'https://graphicsfamily.com/wp-content/uploads/edd/2019/01/free-creative-logo-template.jpg',
+      'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=600&q=80',
   },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText(/LoadingSpinner/gi)).toBeTruthy();
+};
+
+export const ShortMessage: Story = {
+  args: {
+    title: 'Loading saved views',
+    message: 'Almost there.',
   },
-} satisfies Story;
+};

@@ -1,9 +1,6 @@
 import type { ReactElement } from 'react';
 import { MediaCarousel } from '../media-carousel';
-import type {
-  ProductCarouselProduct,
-  ProductCarouselProps,
-} from './product-carousel.types';
+import type { ProductCarouselProduct, ProductCarouselProps } from './product-carousel.types';
 
 function normalizeProductMedia(product: ProductCarouselProduct) {
   if (product.media && product.media.length > 0) {
@@ -26,7 +23,13 @@ export function ProductCarousel({
   slideClassName,
   mediaClassName,
   showNavigation = true,
-  showIndicators = true,
+  showIndicators = false,
+  autoplay = false,
+  autoplayDelay = 3000,
+  loop = false,
+  pauseOnHover = true,
+  playOnHover = false,
+  stopOnInteraction = false,
 }: Readonly<ProductCarouselProps>): ReactElement | null {
   const items = normalizeProductMedia(product);
 
@@ -50,6 +53,12 @@ export function ProductCarousel({
               })
           : undefined
       }
+      autoplay={autoplay}
+      autoplayDelay={autoplayDelay}
+      loop={loop}
+      pauseOnHover={pauseOnHover}
+      playOnHover={playOnHover}
+      stopOnInteraction={stopOnInteraction}
       showIndicators={showIndicators}
       showNavigation={showNavigation}
       slideClassName={slideClassName}

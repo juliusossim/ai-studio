@@ -1,11 +1,7 @@
 import type { ComponentPropsWithoutRef } from 'react';
 import type { ButtonProps } from '../button';
 
-export type InputGroupAlign =
-  | 'inline-start'
-  | 'inline-end'
-  | 'block-start'
-  | 'block-end';
+export type InputGroupAlign = 'inline-start' | 'inline-end' | 'block-start' | 'block-end';
 
 export type InputGroupButtonSize = 'xs' | 'sm' | 'icon-xs' | 'icon-sm';
 
@@ -25,6 +21,4 @@ export type InputGroupButtonProps = Readonly<
 
 export type InputGroupTextProps = Readonly<ComponentPropsWithoutRef<'span'>>;
 export type InputGroupInputProps = Readonly<ComponentPropsWithoutRef<'input'>>;
-export type InputGroupTextareaProps = Readonly<
-  ComponentPropsWithoutRef<'textarea'>
->;
+export type InputGroupTextareaProps = Readonly<ComponentPropsWithoutRef<'textarea'>>;

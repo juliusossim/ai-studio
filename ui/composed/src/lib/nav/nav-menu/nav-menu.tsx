@@ -54,16 +54,19 @@ export function NavMenu({
           <NavigationMenuItem key={item.id}>
             {item.href ? (
               <NavigationMenuLink active={item.active} asChild>
-                {renderLinkContent(item.href, renderLink, 'flex items-center gap-2', renderNavLabel(item))}
+                {renderLinkContent(
+                  item.href,
+                  renderLink,
+                  'flex items-center gap-2',
+                  renderNavLabel(item),
+                )}
               </NavigationMenuLink>
             ) : (
               <NavigationMenuTrigger className={cn('bg-transparent', triggerClassName)}>
                 {renderNavLabel(item)}
               </NavigationMenuTrigger>
             )}
-            {item.children ? (
-              <NavigationMenuContent>{item.children}</NavigationMenuContent>
-            ) : null}
+            {item.children ? <NavigationMenuContent>{item.children}</NavigationMenuContent> : null}
           </NavigationMenuItem>
         ))}
       </NavigationMenuList>

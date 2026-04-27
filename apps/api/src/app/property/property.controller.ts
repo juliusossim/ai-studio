@@ -1,5 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import type { Property, PropertyInteractionResponse } from '@org/types';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/auth.types';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { UuidParamDto } from '../common/dto/uuid-param.dto';
 import type { CreatePropertyDto } from './dto/create-property.dto';
 import type * as propertyInteractionDto from './dto/property-interaction.dto';
 import { PropertyService } from './property.service';
@@ -9,8 +13,12 @@ export class PropertyController {
   constructor(private readonly propertyService: PropertyService) {}
 
   @Post()
-  create(@Body() input: CreatePropertyDto): Promise<Property> {
-    return this.propertyService.create(input);
+  @UseGuards(AuthGuard)
+  create(
+    @Body() input: CreatePropertyDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<Property> {
+    return this.propertyService.create(input, user.id);
   }
 
   @Get()
@@ -19,39 +27,39 @@ export class PropertyController {
   }
 
   @Get(':id')
-  findById(@Param('id') id: string): Promise<Property> {
-    return this.propertyService.findById(id);
+  findById(@Param() params: UuidParamDto): Promise<Property> {
+    return this.propertyService.findById(params.id);
   }
 
   @Post(':id/view')
   view(
-    @Param('id') id: string,
+    @Param() params: UuidParamDto,
     @Body() input: propertyInteractionDto.PropertyInteractionDto,
   ): Promise<PropertyInteractionResponse> {
-    return this.propertyService.trackInteraction(id, input, 'view_property');
+    return this.propertyService.trackInteraction(params.id, input, 'view_property');
   }
 
   @Post(':id/like')
   like(
-    @Param('id') id: string,
+    @Param() params: UuidParamDto,
     @Body() input: propertyInteractionDto.PropertyInteractionDto,
   ): Promise<PropertyInteractionResponse> {
-    return this.propertyService.trackInteraction(id, input, 'like_property');
+    return this.propertyService.trackInteraction(params.id, input, 'like_property');
   }
 
   @Post(':id/save')
   save(
-    @Param('id') id: string,
+    @Param() params: UuidParamDto,
     @Body() input: propertyInteractionDto.PropertyInteractionDto,
   ): Promise<PropertyInteractionResponse> {
-    return this.propertyService.trackInteraction(id, input, 'save_property');
+    return this.propertyService.trackInteraction(params.id, input, 'save_property');
   }
 
   @Post(':id/share')
   share(
-    @Param('id') id: string,
+    @Param() params: UuidParamDto,
     @Body() input: propertyInteractionDto.PropertyInteractionDto,
   ): Promise<PropertyInteractionResponse> {
-    return this.propertyService.trackInteraction(id, input, 'share_property');
+    return this.propertyService.trackInteraction(params.id, input, 'share_property');
   }
 }

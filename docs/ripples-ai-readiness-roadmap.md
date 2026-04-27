@@ -132,10 +132,12 @@ This is the recommended implementation order for the platform.
 ## Phase 1 — Canonical Platform Foundations
 
 Goal:
+
 - lock the canonical business model
 - ensure all major entities are AI-ready in structure
 
 Build:
+
 - `User`
 - `AuthIdentity`
 - `Session`
@@ -166,6 +168,7 @@ Build:
 - `LedgerEntry`
 
 AI-ready outcome:
+
 - clean domain foundations
 - explicit ownership
 - usable location and trust metadata
@@ -174,9 +177,11 @@ AI-ready outcome:
 ## Phase 2 — Social And Feed Foundations
 
 Goal:
+
 - make the platform measurable and feed-native
 
 Build:
+
 - `ContentPost`
 - `ContentMedia`
 - `Comment`
@@ -195,6 +200,7 @@ Build:
   - location context
 
 AI-ready outcome:
+
 - real feed inventory
 - event-rich content graph
 - structured interaction trails
@@ -202,9 +208,11 @@ AI-ready outcome:
 ## Phase 3 — Live And Creator Economy Foundations
 
 Goal:
+
 - support real-time social commerce and creator distribution
 
 Build:
+
 - `CreatorProfile`
 - `CreatorProgram`
 - `LiveSession`
@@ -220,15 +228,18 @@ Build:
 - `RippleSpend`
 
 AI-ready outcome:
+
 - creator and live signals become first-class
 - feed can rank more than static listings
 
 ## Phase 4 — Trend And Read-Model Infrastructure
 
 Goal:
+
 - make trend, locality, and preference data queryable
 
 Build:
+
 - `TrendSignal`
 - `TrendingSnapshot`
 - `EntityEngagementSummary`
@@ -242,6 +253,7 @@ Build:
 - `RankingFeatureSnapshot`
 
 AI-ready outcome:
+
 - candidate retrieval can be diverse and fast
 - personalization inputs exist
 - trend is computed rather than guessed
@@ -249,9 +261,11 @@ AI-ready outcome:
 ## Phase 5 — Deterministic Personalized Retrieval
 
 Goal:
+
 - produce viewer-specific candidate sets without ML dependency
 
 Build:
+
 - candidate retrieval services for:
   - nearby listings
   - trending local listings
@@ -264,44 +278,53 @@ Build:
 - deterministic explanation generation
 
 AI-ready outcome:
+
 - strong feed candidate pools
 - honest “for you” behavior before AI reranking
 
 ## Phase 6 — First AI Ranking Layer
 
 Goal:
+
 - introduce AI where the substrate is already strong
 
 Build:
+
 - personalized reranking service
 - grounded explanation layer
 - evaluation pipeline for ranking quality
 - feature store or ranking feature projection
 
 AI-ready outcome:
+
 - AI improves ordering, not foundational retrieval
 
 ## Phase 7 — Embeddings And Semantic Intelligence
 
 Goal:
+
 - add semantic retrieval only when content scale justifies it
 
 Build:
+
 - embedding generation pipeline
 - embedding refresh and invalidation strategy
 - semantic candidate retrieval
 - similar-item and similar-content services
 
 AI-ready outcome:
+
 - cross-domain semantic discovery
 - richer search and similarity
 
 ## Phase 8 — LLM Product Layer
 
 Goal:
+
 - use LLMs for grounded intelligence, not unsupported magic
 
 Build:
+
 - grounded recommendation explanations
 - listing summarization
 - market update summarization
@@ -499,87 +522,106 @@ These read models should be:
 ## 11.1 Use Case: Honest Feed Explanations
 
 Examples:
+
 - `Just listed`
 - `Trending near you`
 - `Popular with buyers`
 
 Prerequisites:
+
 - structured score breakdown
 - trend signals
 - viewer location context
 
 AI required:
+
 - no
 
 Recommended phase:
+
 - Phase 4 or 5
 
 ## 11.2 Use Case: Visitor Feed Personalization
 
 Examples:
+
 - session-aware ranking
 - local-first cold start
 
 Prerequisites:
+
 - `Session`
 - impression tracking
 - session preference summaries
 - location-aware retrieval
 
 AI required:
+
 - no initially
 
 Recommended phase:
+
 - Phase 5
 
 ## 11.3 Use Case: Signed-In Feed Personalization
 
 Examples:
+
 - based on saves, follows, views, lives watched
 
 Prerequisites:
+
 - user behavior history
 - user preference summaries
 - candidate retrieval sources
 - trend snapshots
 
 AI required:
+
 - optional first, recommended later
 
 Recommended phase:
+
 - Phase 5 for deterministic
 - Phase 6 for AI reranking
 
 ## 11.4 Use Case: Trending Properties / Events / Creators
 
 Prerequisites:
+
 - event windows
 - trend aggregation
 - entity-specific momentum signals
 
 AI required:
+
 - no
 
 Recommended phase:
+
 - Phase 4
 
 ## 11.5 Use Case: “Similar Listings” Or “Similar Content”
 
 Prerequisites:
+
 - content volume
 - structured features
 - semantic need
 - background embedding pipeline
 
 AI required:
+
 - yes, if semantic similarity is desired
 
 Recommended phase:
+
 - Phase 7
 
 ## 11.6 Use Case: Feed AI Reranking
 
 Prerequisites:
+
 - deterministic candidate retrieval
 - ranking feature snapshots
 - evaluation metrics
@@ -587,27 +629,33 @@ Prerequisites:
 - trend snapshots
 
 AI required:
+
 - yes
 
 Recommended phase:
+
 - Phase 6
 
 ## 11.7 Use Case: LLM-Generated Recommendations And Summaries
 
 Prerequisites:
+
 - grounded structured signals
 - trusted content sources
 - explanation source fields
 
 AI required:
+
 - yes
 
 Recommended phase:
+
 - Phase 8
 
 ## 11.8 Use Case: AI Concierge / Search Assistant
 
 Prerequisites:
+
 - canonical domain model
 - retrieval APIs
 - filters and search
@@ -615,9 +663,11 @@ Prerequisites:
 - policy-safe prompt grounding
 
 AI required:
+
 - yes
 
 Recommended phase:
+
 - Phase 8
 
 ---

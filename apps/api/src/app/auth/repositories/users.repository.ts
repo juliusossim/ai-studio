@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AuthProvider, Prisma, UserSystemRole } from '@prisma/client';
 import type {
   AuthProvider as PublicAuthProvider,
@@ -6,6 +6,7 @@ import type {
   UserRole as PublicUserRole,
 } from '@org/types';
 import type { CreateManualUserInput, StoredUser, UpsertGoogleUserInput } from '../auth.types';
+import { executePrismaOperation } from '../../database/prisma-exception.mapper';
 import { PrismaService } from '../../database/prisma.service';
 
 type StoredUserRecord = Prisma.UserGetPayload<{
@@ -21,35 +22,35 @@ export class UsersRepository {
   async createManual(input: CreateManualUserInput): Promise<StoredUser> {
     const email = this.normalizeEmail(input.email);
 
-    try {
-      const user = await this.prisma.user.create({
-        data: {
-          email,
-          fullName: input.fullName.trim(),
-          systemRoles: [UserSystemRole.user],
-          emailVerified: false,
-          authIdentities: {
-            create: {
-              provider: AuthProvider.manual,
-              providerSubject: email,
-              passwordHash: input.passwordHash,
-              passwordSalt: input.passwordSalt,
+    return executePrismaOperation(
+      async () => {
+        const user = await this.prisma.user.create({
+          data: {
+            email,
+            fullName: input.fullName.trim(),
+            systemRoles: [UserSystemRole.user],
+            emailVerified: false,
+            authIdentities: {
+              create: {
+                provider: AuthProvider.manual,
+                providerSubject: email,
+                passwordHash: input.passwordHash,
+                passwordSalt: input.passwordSalt,
+              },
             },
           },
-        },
-        include: {
-          authIdentities: true,
-        },
-      });
+          include: {
+            authIdentities: true,
+          },
+        });
 
-      return this.toStoredUser(user);
-    } catch (error) {
-      if (this.isUniqueConstraintError(error)) {
-        throw new ConflictException('An account already exists for this email address.');
-      }
-
-      throw error;
-    }
+        return this.toStoredUser(user);
+      },
+      {
+        conflictDetail: 'An account already exists for this email address.',
+        dependencyDetail: 'The account store is temporarily unavailable.',
+      },
+    );
   }
 
   async upsertGoogle(input: UpsertGoogleUserInput): Promise<StoredUser> {
@@ -64,48 +65,68 @@ export class UsersRepository {
       return this.updateGoogleUser(existingByEmail.id, input);
     }
 
-    const user = await this.prisma.user.create({
-      data: {
-        email,
-        fullName: input.fullName.trim(),
-        avatarUrl: input.avatarUrl,
-        systemRoles: [UserSystemRole.user],
-        emailVerified: input.emailVerified,
-        authIdentities: {
-          create: {
-            provider: AuthProvider.google,
-            providerSubject: input.googleSubject,
+    return executePrismaOperation(
+      async () => {
+        const user = await this.prisma.user.create({
+          data: {
+            email,
+            fullName: input.fullName.trim(),
+            avatarUrl: input.avatarUrl,
+            systemRoles: [UserSystemRole.user],
+            emailVerified: input.emailVerified,
+            authIdentities: {
+              create: {
+                provider: AuthProvider.google,
+                providerSubject: input.googleSubject,
+              },
+            },
           },
-        },
-      },
-      include: {
-        authIdentities: true,
-      },
-    });
+          include: {
+            authIdentities: true,
+          },
+        });
 
-    return this.toStoredUser(user);
+        return this.toStoredUser(user);
+      },
+      {
+        conflictDetail: 'The Google account is already linked to another user.',
+        dependencyDetail: 'The account store is temporarily unavailable.',
+      },
+    );
   }
 
   async findById(id: string): Promise<StoredUser | undefined> {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-      include: {
-        authIdentities: true,
+    const user = await executePrismaOperation(
+      () =>
+        this.prisma.user.findUnique({
+          where: { id },
+          include: {
+            authIdentities: true,
+          },
+        }),
+      {
+        dependencyDetail: 'The account store is temporarily unavailable.',
       },
-    });
+    );
 
     return user ? this.toStoredUser(user) : undefined;
   }
 
   async findByEmail(email: string): Promise<StoredUser | undefined> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: this.normalizeEmail(email),
+    const user = await executePrismaOperation(
+      () =>
+        this.prisma.user.findUnique({
+          where: {
+            email: this.normalizeEmail(email),
+          },
+          include: {
+            authIdentities: true,
+          },
+        }),
+      {
+        dependencyDetail: 'The account store is temporarily unavailable.',
       },
-      include: {
-        authIdentities: true,
-      },
-    });
+    );
 
     return user ? this.toStoredUser(user) : undefined;
   }
@@ -128,34 +149,41 @@ export class UsersRepository {
     userId: string,
     input: UpsertGoogleUserInput,
   ): Promise<StoredUser> {
-    const user = await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        fullName: input.fullName.trim(),
-        avatarUrl: input.avatarUrl,
-        emailVerified: input.emailVerified,
-        authIdentities: {
-          upsert: {
-            where: {
-              provider_providerSubject: {
-                provider: AuthProvider.google,
-                providerSubject: input.googleSubject,
+    const user = await executePrismaOperation(
+      () =>
+        this.prisma.user.update({
+          where: { id: userId },
+          data: {
+            fullName: input.fullName.trim(),
+            avatarUrl: input.avatarUrl,
+            emailVerified: input.emailVerified,
+            authIdentities: {
+              upsert: {
+                where: {
+                  provider_providerSubject: {
+                    provider: AuthProvider.google,
+                    providerSubject: input.googleSubject,
+                  },
+                },
+                create: {
+                  provider: AuthProvider.google,
+                  providerSubject: input.googleSubject,
+                },
+                update: {
+                  providerSubject: input.googleSubject,
+                },
               },
             },
-            create: {
-              provider: AuthProvider.google,
-              providerSubject: input.googleSubject,
-            },
-            update: {
-              providerSubject: input.googleSubject,
-            },
           },
-        },
+          include: {
+            authIdentities: true,
+          },
+        }),
+      {
+        conflictDetail: 'The Google account is already linked to another user.',
+        dependencyDetail: 'The account store is temporarily unavailable.',
       },
-      include: {
-        authIdentities: true,
-      },
-    });
+    );
 
     return this.toStoredUser(user);
   }
@@ -164,21 +192,27 @@ export class UsersRepository {
     provider: AuthProvider,
     providerSubject: string,
   ): Promise<StoredUser | undefined> {
-    const authIdentity = await this.prisma.authIdentity.findUnique({
-      where: {
-        provider_providerSubject: {
-          provider,
-          providerSubject,
-        },
-      },
-      include: {
-        user: {
-          include: {
-            authIdentities: true,
+    const authIdentity = await executePrismaOperation(
+      () =>
+        this.prisma.authIdentity.findUnique({
+          where: {
+            provider_providerSubject: {
+              provider,
+              providerSubject,
+            },
           },
-        },
+          include: {
+            user: {
+              include: {
+                authIdentities: true,
+              },
+            },
+          },
+        }),
+      {
+        dependencyDetail: 'The account store is temporarily unavailable.',
       },
-    });
+    );
 
     return authIdentity ? this.toStoredUser(authIdentity.user) : undefined;
   }
@@ -213,10 +247,6 @@ export class UsersRepository {
 
   private toPublicRole(role: UserSystemRole): PublicUserRole {
     return role === UserSystemRole.admin ? 'admin' : 'user';
-  }
-
-  private isUniqueConstraintError(error: unknown): boolean {
-    return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002';
   }
 
   private normalizeEmail(email: string): string {

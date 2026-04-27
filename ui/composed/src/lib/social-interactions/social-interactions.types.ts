@@ -29,6 +29,7 @@ export type SocialInteractionsProps = Readonly<{
   visibleActions?: readonly SocialInteractionAction[];
   counts?: SocialInteractionCounts;
   state?: SocialInteractionState;
+  disabledActions?: Partial<Record<SocialInteractionAction, boolean>>;
   reglamMeta?: SocialReglamMeta;
   onInteraction?: (action: SocialInteractionAction, extra?: Record<string, unknown>) => void;
 }>;

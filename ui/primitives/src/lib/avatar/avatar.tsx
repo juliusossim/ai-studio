@@ -11,11 +11,7 @@ import type {
   AvatarProps,
 } from './avatar.types';
 
-function Avatar({
-  className,
-  size = 'default',
-  ...props
-}: AvatarProps): React.ReactElement {
+function Avatar({ className, size = 'default', ...props }: AvatarProps): React.ReactElement {
   return (
     <AvatarPrimitive.Root
       data-slot="avatar"
@@ -29,10 +25,7 @@ function Avatar({
   );
 }
 
-function AvatarImage({
-  className,
-  ...props
-}: AvatarImageProps): React.ReactElement {
+function AvatarImage({ className, ...props }: AvatarImageProps): React.ReactElement {
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
@@ -42,10 +35,7 @@ function AvatarImage({
   );
 }
 
-function AvatarFallback({
-  className,
-  ...props
-}: AvatarFallbackProps): React.ReactElement {
+function AvatarFallback({ className, ...props }: AvatarFallbackProps): React.ReactElement {
   return (
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
@@ -87,10 +77,7 @@ function AvatarGroup({ className, ...props }: AvatarGroupProps): React.ReactElem
   );
 }
 
-function AvatarGroupCount({
-  className,
-  ...props
-}: AvatarGroupCountProps): React.ReactElement {
+function AvatarGroupCount({ className, ...props }: AvatarGroupCountProps): React.ReactElement {
   return (
     <div
       data-slot="avatar-group-count"

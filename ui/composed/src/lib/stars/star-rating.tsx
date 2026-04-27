@@ -19,20 +19,25 @@ export function StarRating({
           const fillPercentage = Math.max(0, Math.min(100, (clampedRating - index) * 100));
 
           return (
-            <div key={`star-${index + 1}`} className="relative" style={{ height: size, width: size }}>
+            <div
+              key={`star-${index + 1}`}
+              className="relative"
+              style={{ height: size, width: size }}
+            >
               <Star className="absolute text-muted-foreground/30" size={size} strokeWidth={1.5} />
-              <div className="absolute overflow-hidden" style={{ height: size, width: `${fillPercentage}%` }}>
-                <Star
-                  className="fill-amber-400 text-amber-400"
-                  size={size}
-                  strokeWidth={1.5}
-                />
+              <div
+                className="absolute overflow-hidden"
+                style={{ height: size, width: `${fillPercentage}%` }}
+              >
+                <Star className="fill-amber-400 text-amber-400" size={size} strokeWidth={1.5} />
               </div>
             </div>
           );
         })}
       </div>
-      {showValue ? <span className="ml-1 text-sm text-muted-foreground">{clampedRating.toFixed(1)}</span> : null}
+      {showValue ? (
+        <span className="ml-1 text-sm text-muted-foreground">{clampedRating.toFixed(1)}</span>
+      ) : null}
     </div>
   );
 }

@@ -5,6 +5,28 @@ import type {
   MediaUploadSource,
 } from './media-upload.types';
 
+export const externalMediaProviders = [
+  {
+    description: 'Paste a public media URL.',
+    label: 'Web link',
+    value: 'direct-url',
+  },
+  {
+    description: 'Paste a public Dropbox share link.',
+    label: 'Dropbox',
+    value: 'dropbox',
+  },
+  {
+    description: 'Paste a public Google Drive file link.',
+    label: 'Google Drive',
+    value: 'google-drive',
+  },
+] as const satisfies readonly {
+  readonly description: string;
+  readonly label: string;
+  readonly value: ExternalMediaProvider;
+}[];
+
 export function createMediaUploadId(): string {
   if (typeof globalThis.crypto?.randomUUID === 'function') {
     return globalThis.crypto.randomUUID();
@@ -17,17 +39,23 @@ export function createMediaUploadItem(input: {
   readonly alt: string;
   readonly id?: string;
   readonly mimeType?: string;
+  readonly originalName?: string;
+  readonly progressPercent?: number;
   readonly source: MediaUploadSource;
   readonly type: SupportedMediaType;
   readonly url: string;
+  readonly uploadState?: 'uploaded' | 'uploading';
 }): MediaUploadItem {
   return {
     alt: input.alt,
     id: input.id ?? createMediaUploadId(),
     mimeType: input.mimeType,
+    originalName: input.originalName,
+    progressPercent: input.progressPercent,
     source: input.source,
     type: input.type,
     url: input.url,
+    uploadState: input.uploadState,
   };
 }
 
@@ -78,4 +106,46 @@ export function readDefaultAlt(candidate: string): string {
   const cleaned = withoutExtension.replace(/[-_]+/g, ' ').trim();
 
   return cleaned || 'Listing media';
+}
+
+export function readMediaUploadErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return 'Something went wrong while processing media.';
+}
+
+export function clampMediaUploadItems(
+  existingItems: readonly MediaUploadItem[],
+  incomingItems: readonly MediaUploadItem[],
+  maxItems: number,
+): MediaUploadItem[] {
+  return [...existingItems, ...incomingItems].slice(0, maxItems);
+}
+
+export function createLocalUploadTrackingId(file: File): string {
+  return [file.name, String(file.size), String(file.lastModified)].join(':');
+}
+
+export function readExternalUrlPlaceholder(provider: ExternalMediaProvider): string {
+  if (provider === 'dropbox') {
+    return 'https://www.dropbox.com/...';
+  }
+
+  if (provider === 'google-drive') {
+    return 'https://drive.google.com/file/d/...';
+  }
+
+  return 'https://example.com/media.jpg';
+}
+
+export function readAvailabilityBadgeVariant(
+  configured: boolean,
+): 'default' | 'secondary' | 'outline' {
+  if (configured) {
+    return 'default';
+  }
+
+  return 'outline';
 }

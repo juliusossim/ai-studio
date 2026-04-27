@@ -85,11 +85,7 @@ const fieldVariants = cva('group/field flex w-full gap-3 data-[invalid=true]:tex
   },
 });
 
-function Field({
-  className,
-  orientation = 'vertical',
-  ...props
-}: FieldProps): React.ReactElement {
+function Field({ className, orientation = 'vertical', ...props }: FieldProps): React.ReactElement {
   return (
     <div
       role="group"
@@ -111,10 +107,7 @@ function FieldContent({ className, ...props }: FieldContentProps): React.ReactEl
   );
 }
 
-function FieldLabel({
-  className,
-  ...props
-}: FieldLabelProps): React.ReactElement {
+function FieldLabel({ className, ...props }: FieldLabelProps): React.ReactElement {
   return (
     <Label
       data-slot="field-label"

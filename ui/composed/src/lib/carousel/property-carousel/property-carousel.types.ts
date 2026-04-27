@@ -24,6 +24,12 @@ export type PropertyCarouselProps = Readonly<{
   buttonClassName?: string;
   showNavigation?: boolean;
   showIndicators?: boolean;
+  autoplay?: boolean;
+  autoplayDelay?: number;
+  loop?: boolean;
+  pauseOnHover?: boolean;
+  playOnHover?: boolean;
+  stopOnInteraction?: boolean;
   showControls?: boolean;
   autoPlayVideo?: boolean;
 }>;

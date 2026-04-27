@@ -1,4 +1,5 @@
 import type {
+  AbortMediaUploadResponse,
   AuthResponse,
   AuthUser,
   CreatePropertyRequest,
@@ -6,6 +7,8 @@ import type {
   GoogleOAuthCallbackRequest,
   GoogleOAuthStartRequest,
   GoogleOAuthStartResponse,
+  InitiateMediaUploadRequest,
+  InitiateMediaUploadResponse,
   LoginManualRequest,
   LogoutRequest,
   Property,
@@ -14,6 +17,7 @@ import type {
   RefreshTokenRequest,
   RegisterManualRequest,
   UploadedMediaAsset,
+  UploadMediaRequestOptions,
 } from '@org/types';
 
 export interface RipplesApiClientOptions {
@@ -30,7 +34,17 @@ export interface RipplesApiClient {
   completeGoogleOAuth(input: GoogleOAuthCallbackRequest): Promise<AuthResponse>;
   getMe(accessToken: string): Promise<AuthUser>;
   createProperty(input: CreatePropertyRequest, accessToken?: string): Promise<Property>;
-  uploadMedia(files: File[], accessToken?: string): Promise<UploadedMediaAsset[]>;
+  initiateMediaUpload(
+    input: InitiateMediaUploadRequest,
+    accessToken?: string,
+  ): Promise<InitiateMediaUploadResponse>;
+  completeMediaUpload(mediaAssetId: string, accessToken?: string): Promise<UploadedMediaAsset>;
+  abortMediaUpload(mediaAssetId: string, accessToken?: string): Promise<AbortMediaUploadResponse>;
+  uploadMedia(
+    files: File[],
+    accessToken?: string,
+    options?: UploadMediaRequestOptions,
+  ): Promise<UploadedMediaAsset[]>;
   getProperties(accessToken?: string): Promise<Property[]>;
   getFeed(input?: FeedRequestOptions, accessToken?: string): Promise<FeedResponse>;
   viewProperty(

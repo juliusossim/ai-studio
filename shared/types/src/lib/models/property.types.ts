@@ -3,6 +3,7 @@ import type { Event } from './event.types.js';
 import type { Media } from './media.types.js';
 
 export type PropertyStatus = 'draft' | 'active' | 'under-offer' | 'sold' | 'archived';
+export type PropertyMediaAttachmentRole = 'cover' | 'gallery';
 
 export interface Property {
   id: string;
@@ -16,12 +17,18 @@ export interface Property {
   updatedAt: Date;
 }
 
+export interface PropertyMediaAttachmentInput {
+  mediaAssetId: string;
+  alt: string;
+  role?: PropertyMediaAttachmentRole;
+}
+
 export interface CreatePropertyRequest {
   title: string;
   description: string;
   location: Property['location'];
   price: Property['price'];
-  media: Omit<Media, 'id'>[];
+  media: PropertyMediaAttachmentInput[];
   status?: PropertyStatus;
 }
 

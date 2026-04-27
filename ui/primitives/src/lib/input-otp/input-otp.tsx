@@ -10,11 +10,7 @@ import type {
   InputOTPSlotProps,
 } from './input-otp.types';
 
-function InputOTP({
-  className,
-  containerClassName,
-  ...props
-}: InputOTPProps): React.ReactElement {
+function InputOTP({ className, containerClassName, ...props }: InputOTPProps): React.ReactElement {
   return (
     <OTPInput
       data-slot="input-otp"
@@ -31,11 +27,7 @@ function InputOTPGroup({ className, ...props }: InputOTPGroupProps): React.React
   );
 }
 
-function InputOTPSlot({
-  index,
-  className,
-  ...props
-}: InputOTPSlotProps): React.ReactElement {
+function InputOTPSlot({ index, className, ...props }: InputOTPSlotProps): React.ReactElement {
   const inputOTPContext = React.useContext(OTPInputContext);
   const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {};
 

@@ -11,7 +11,7 @@ export function FeedCreatePanel({
   propertyError,
   title,
 }: Readonly<FeedCreatePanelProps>): ReactElement {
-  const uploadMedia = useUploadMediaMutation(accessToken);
+  const uploadMedia = useUploadMediaMutation('listing', accessToken);
 
   return (
     <Card>
@@ -29,7 +29,9 @@ export function FeedCreatePanel({
           disabled={!accessToken}
           error={propertyError}
           isSubmitting={isCreatingProperty}
-          onUploadFiles={(files) => uploadMedia.mutateAsync(files)}
+          onUploadFiles={(files, options) =>
+            uploadMedia.mutateAsync({ files, onProgress: options?.onProgress })
+          }
           onSubmit={onPropertySubmit}
         />
       </CardContent>

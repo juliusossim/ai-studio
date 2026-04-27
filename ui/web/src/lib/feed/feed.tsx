@@ -16,6 +16,10 @@ import { FeedSidebar } from './feed-stream/feed-sidebar';
 import { FeedSkeletonCard } from './feed-stream/feed-skeleton-card';
 import { FilterBar } from './feed-stream/filter-bar';
 import { readWorkspaceError, sortFeedItems } from './feed-utils/feed.utils';
+import {
+  publishFeedProperty,
+  trackFeedPropertyInteraction,
+} from './feed-utils/feed-workspace.utils';
 import type { FeedView, FeedWorkspaceProps } from './feed.types';
 import { FeedState } from './feed-status/feed-status';
 
@@ -29,7 +33,7 @@ export function FeedWorkspace({
   const interaction = usePropertyInteractionMutation(accessToken);
   const { isPending: isInteracting, mutate: trackPropertyInteraction } = interaction;
   const [activeView, setActiveView] = useState<FeedView>('For you');
-  const [propertyError, setPropertyError] = useState<string | undefined>();
+  const [propertyErrorMessage, setPropertyErrorMessage] = useState<string | null>(null);
 
   useTrackFeedViews({
     items: feed.data?.items,
@@ -37,26 +41,6 @@ export function FeedWorkspace({
     trackInteraction: trackPropertyInteraction,
     userId: user?.id,
   });
-
-  async function publishProperty(input: CreatePropertyRequest): Promise<void> {
-    setPropertyError(undefined);
-    try {
-      await createProperty.mutateAsync(input);
-    } catch (error) {
-      setPropertyError(readWorkspaceError(error));
-    }
-  }
-
-  function trackInteraction(interactionName: PropertyInteractionName, propertyId: string): void {
-    trackPropertyInteraction({
-      propertyId,
-      interaction: interactionName,
-      payload: {
-        sessionId,
-        userId: user?.id,
-      },
-    });
-  }
 
   const items = sortFeedItems(feed.data?.items ?? [], activeView);
 
@@ -100,7 +84,15 @@ export function FeedWorkspace({
                   isInteracting={isInteracting}
                   item={item}
                   key={item.id}
-                  onInteraction={trackInteraction}
+                  onInteraction={(interactionName: PropertyInteractionName, propertyId: string) =>
+                    trackFeedPropertyInteraction({
+                      interaction: interactionName,
+                      mutate: trackPropertyInteraction,
+                      propertyId,
+                      sessionId,
+                      userId: user?.id,
+                    })
+                  }
                 />
               ))}
             </div>
@@ -110,8 +102,16 @@ export function FeedWorkspace({
           <FeedCreatePanel
             accessToken={accessToken}
             isCreatingProperty={createProperty.isPending}
-            onPropertySubmit={publishProperty}
-            propertyError={propertyError}
+            onPropertySubmit={(input: CreatePropertyRequest) =>
+              publishFeedProperty({
+                createProperty,
+                createPropertyInput: input,
+                onError: setPropertyErrorMessage,
+                readErrorMessage: readWorkspaceError,
+                resetError: () => setPropertyErrorMessage(null),
+              })
+            }
+            propertyError={propertyErrorMessage ?? undefined}
             title={title}
           />
           <FeedSidebar activeView={activeView} count={items.length} />

@@ -5,9 +5,7 @@ export type TooltipProviderProps = Readonly<
   ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider>
 >;
 
-export type TooltipProps = Readonly<
-  ComponentPropsWithoutRef<typeof TooltipPrimitive.Root>
->;
+export type TooltipProps = Readonly<ComponentPropsWithoutRef<typeof TooltipPrimitive.Root>>;
 
 export type TooltipTriggerProps = Readonly<
   ComponentPropsWithoutRef<typeof TooltipPrimitive.Trigger>

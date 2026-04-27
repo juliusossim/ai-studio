@@ -1,14 +1,21 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   AddressAssignmentRole,
   AddressAssignmentSubjectType,
   CurrencyCode,
   ListingStatus as PrismaListingStatus,
-  MediaType,
+  MediaAssetIntent,
+  MediaAssetStatus,
+  OwnershipSubjectType,
+  PropertyMediaRole,
+  PropertyOwnershipRole,
   Prisma,
   PropertyStatus as PrismaPropertyStatus,
 } from '@prisma/client';
 import type { Address, Media, Property } from '@org/types';
+import { executePrismaOperation } from '../database/prisma-exception.mapper';
+import { InternalOperationException } from '../errors/internal-operation.exception';
+import { ResourceNotFoundException } from '../errors/resource-not-found.exception';
 import { PrismaService } from '../database/prisma.service';
 import type { CreatePropertyDto, PropertyMediaDto } from './dto/create-property.dto';
 
@@ -16,9 +23,12 @@ type PropertyRepositoryClient = PrismaService | Prisma.TransactionClient;
 
 type PropertyRecord = Prisma.PropertyGetPayload<{
   include: {
-    media: {
+    mediaAttachments: {
       orderBy: {
         sortOrder: 'asc';
+      };
+      include: {
+        mediaAsset: true;
       };
     };
     listings: {
@@ -28,6 +38,12 @@ type PropertyRecord = Prisma.PropertyGetPayload<{
     };
   };
 }>;
+
+interface NormalizedPropertyMediaInput {
+  readonly mediaAssetId: string;
+  readonly alt: string;
+  readonly role: 'cover' | 'gallery';
+}
 
 type PropertyAddressAssignmentRecord = Prisma.AddressAssignmentGetPayload<{
   include: {
@@ -55,89 +71,133 @@ const SUPPORTED_CURRENCIES: ReadonlySet<string> = new Set([
 export class PropertyRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(input: CreatePropertyDto): Promise<Property> {
+  async create(input: CreatePropertyDto, ownerUserId: string): Promise<Property> {
     const location = this.normalizeLocation(input.location);
     const price = this.normalizePrice(input.price);
     const media = input.media.map((item, index) => this.normalizeMedia(item, index));
-    const property = await this.prisma.$transaction(async (tx) => {
-      const createdProperty = await tx.property.create({
-        data: {
-          title: input.title.trim(),
-          description: input.description.trim(),
-          status: this.toCanonicalPropertyStatus(input.status ?? 'active'),
-          media: {
-            create: media.map((item, index) => ({
-              url: item.url,
-              type: this.toPrismaMediaType(item.type),
-              alt: item.alt,
-              sortOrder: index,
-            })),
-          },
-        },
-      });
+    const property = await executePrismaOperation(
+      () =>
+        this.prisma.$transaction(async (tx) => {
+          const mediaAssets = await tx.mediaAsset.findMany({
+            where: {
+              id: {
+                in: media.map((item) => item.mediaAssetId),
+              },
+              deletedAt: null,
+              intent: MediaAssetIntent.listing,
+              ownerUserId,
+              status: MediaAssetStatus.ready,
+            },
+          });
+          const mediaAssetMap = new Map(mediaAssets.map((item) => [item.id, item]));
 
-      const address = await tx.address.create({
-        data: {
-          city: location.city,
-          country: location.country,
-          latitude: location.latitude,
-          longitude: location.longitude,
-        },
-      });
+          media.forEach((item, index) => {
+            if (!mediaAssetMap.has(item.mediaAssetId)) {
+              throw new BadRequestException(
+                `media.${index}.mediaAssetId must reference a ready listing media asset.`,
+              );
+            }
+          });
 
-      await tx.addressAssignment.create({
-        data: {
-          addressId: address.id,
-          subjectType: AddressAssignmentSubjectType.property,
-          subjectId: createdProperty.id,
-          role: AddressAssignmentRole.property_location,
-          isPrimary: true,
-        },
-      });
+          const createdProperty = await tx.property.create({
+            data: {
+              title: input.title.trim(),
+              description: input.description.trim(),
+              status: this.toCanonicalPropertyStatus(input.status ?? 'active'),
+              mediaAttachments: {
+                create: media.map((item, index) => ({
+                  alt: item.alt,
+                  mediaAssetId: item.mediaAssetId,
+                  role: this.toPrismaPropertyMediaRole(item.role),
+                  sortOrder: index,
+                })),
+              },
+            },
+          });
 
-      const listing = await tx.listing.create({
-        data: {
-          propertyId: createdProperty.id,
-          title: input.title.trim(),
-          description: input.description.trim(),
-          priceAmount: price.amount,
-          priceCurrency: price.currency as CurrencyCode,
-          status: this.toCanonicalListingStatus(input.status ?? 'active'),
-        },
-      });
+          const address = await tx.address.create({
+            data: {
+              city: location.city,
+              country: location.country,
+              latitude: location.latitude,
+              longitude: location.longitude,
+            },
+          });
 
-      await tx.listingVersion.create({
-        data: {
-          listingId: listing.id,
-          title: listing.title,
-          description: listing.description,
-          priceAmount: listing.priceAmount,
-          priceCurrency: listing.priceCurrency,
-        },
-      });
+          await tx.addressAssignment.create({
+            data: {
+              addressId: address.id,
+              subjectType: AddressAssignmentSubjectType.property,
+              subjectId: createdProperty.id,
+              role: AddressAssignmentRole.property_location,
+              isPrimary: true,
+            },
+          });
 
-      return this.findByIdWithClient(tx, createdProperty.id);
-    });
+          await tx.propertyOwnership.create({
+            data: {
+              active: true,
+              ownerId: ownerUserId,
+              ownerType: OwnershipSubjectType.user,
+              propertyId: createdProperty.id,
+              role: PropertyOwnershipRole.owner,
+            },
+          });
+
+          const listing = await tx.listing.create({
+            data: {
+              propertyId: createdProperty.id,
+              title: input.title.trim(),
+              description: input.description.trim(),
+              priceAmount: price.amount,
+              priceCurrency: price.currency as CurrencyCode,
+              status: this.toCanonicalListingStatus(input.status ?? 'active'),
+            },
+          });
+
+          await tx.listingVersion.create({
+            data: {
+              listingId: listing.id,
+              title: listing.title,
+              description: listing.description,
+              priceAmount: listing.priceAmount,
+              priceCurrency: listing.priceCurrency,
+            },
+          });
+
+          return this.findByIdWithClient(tx, createdProperty.id);
+        }),
+      {
+        dependencyDetail: 'The property store is temporarily unavailable.',
+      },
+    );
 
     if (!property) {
-      throw new NotFoundException('Property was created but could not be reloaded.');
+      throw new InternalOperationException('Property was created but could not be reloaded.');
     }
 
     return property;
   }
 
   async findMany(): Promise<Property[]> {
-    return this.findProperties(this.prisma, false);
+    return executePrismaOperation(() => this.findProperties(this.prisma, false), {
+      dependencyDetail: 'The property store is temporarily unavailable.',
+    });
   }
 
   async findActive(): Promise<Property[]> {
-    return this.findProperties(this.prisma, true);
+    return executePrismaOperation(() => this.findProperties(this.prisma, true), {
+      dependencyDetail: 'The property store is temporarily unavailable.',
+    });
   }
 
   async findById(id: string): Promise<Property> {
-    const property = await this.findByIdWithClient(this.prisma, id);
+    const property = await executePrismaOperation(() => this.findByIdWithClient(this.prisma, id), {
+      dependencyDetail: 'The property store is temporarily unavailable.',
+      notFoundDetail: `Property ${id} was not found.`,
+    });
     if (!property) {
-      throw new NotFoundException(`Property ${id} was not found.`);
+      throw new ResourceNotFoundException(`Property ${id} was not found.`);
     }
 
     return property;
@@ -221,13 +281,19 @@ export class PropertyRepository {
   }
 
   private includeRelations(): {
-    readonly media: { readonly orderBy: { readonly sortOrder: 'asc' } };
+    readonly mediaAttachments: {
+      readonly orderBy: { readonly sortOrder: 'asc' };
+      readonly include: { readonly mediaAsset: true };
+    };
     readonly listings: { readonly orderBy: { readonly createdAt: 'desc' } };
   } {
     return {
-      media: {
+      mediaAttachments: {
         orderBy: {
           sortOrder: 'asc',
+        },
+        include: {
+          mediaAsset: true,
         },
       },
       listings: {
@@ -273,18 +339,13 @@ export class PropertyRepository {
     };
   }
 
-  private normalizeMedia(input: PropertyMediaDto, index: number): Omit<Media, 'id'> {
+  private normalizeMedia(input: PropertyMediaDto, index: number): NormalizedPropertyMediaInput {
     const value = this.expectRecord(input, `media.${index}`);
-    const type = value.type;
-
-    if (type !== 'image' && type !== 'video') {
-      throw new BadRequestException(`media.${index}.type must be image or video.`);
-    }
 
     return {
-      url: this.expectString(value.url, `media.${index}.url`),
-      type,
+      mediaAssetId: this.expectString(value.mediaAssetId, `media.${index}.mediaAssetId`),
       alt: this.expectString(value.alt, `media.${index}.alt`),
+      role: this.readPropertyMediaRole(value.role, `media.${index}.role`),
     };
   }
 
@@ -308,12 +369,20 @@ export class PropertyRepository {
         amount: Number(primaryListing.priceAmount),
         currency: primaryListing.priceCurrency,
       },
-      media: property.media.map((item) => ({
-        id: item.id,
-        url: item.url,
-        type: item.type,
-        alt: item.alt,
-      })),
+      media: property.mediaAttachments.flatMap((item) => {
+        if (!item.mediaAsset.publicUrl) {
+          return [];
+        }
+
+        return [
+          {
+            id: item.mediaAsset.id,
+            url: item.mediaAsset.publicUrl,
+            type: item.mediaAsset.type,
+            alt: item.alt,
+          } satisfies Media,
+        ];
+      }),
       status: this.toPublicStatusFromListing(primaryListing.status),
       createdAt: property.createdAt,
       updatedAt: property.updatedAt,
@@ -412,8 +481,22 @@ export class PropertyRepository {
     }
   }
 
-  private toPrismaMediaType(type: Media['type']): MediaType {
-    return type === 'video' ? MediaType.video : MediaType.image;
+  private toPrismaPropertyMediaRole(role: NormalizedPropertyMediaInput['role']): PropertyMediaRole {
+    return role === 'cover' ? PropertyMediaRole.cover : PropertyMediaRole.gallery;
+  }
+
+  private readPropertyMediaRole(
+    value: unknown,
+    field: string,
+  ): NormalizedPropertyMediaInput['role'] {
+    if (value === undefined) {
+      return 'gallery';
+    }
+    if (value === 'cover' || value === 'gallery') {
+      return value;
+    }
+
+    throw new BadRequestException(`${field} must be cover or gallery.`);
   }
 
   private expectRecord(value: unknown, field: string): Record<string, unknown> {

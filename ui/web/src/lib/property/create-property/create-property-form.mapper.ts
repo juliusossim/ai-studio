@@ -26,8 +26,7 @@ export function toCreatePropertyRequest(values: CreatePropertyFormValues): Creat
       currency: values.priceCurrency,
     },
     media: values.media.map((item) => ({
-      url: item.url,
-      type: item.type,
+      mediaAssetId: item.id,
       alt: item.alt,
     })),
     status: 'active',

@@ -10,15 +10,11 @@ import type {
   HoverCardTriggerProps,
 } from './hover-card.types';
 
-function HoverCard({
-  ...props
-}: HoverCardProps): React.ReactElement {
+function HoverCard({ ...props }: HoverCardProps): React.ReactElement {
   return <HoverCardPrimitive.Root data-slot="hover-card" {...props} />;
 }
 
-function HoverCardTrigger({
-  ...props
-}: HoverCardTriggerProps): React.ReactElement {
+function HoverCardTrigger({ ...props }: HoverCardTriggerProps): React.ReactElement {
   return <HoverCardPrimitive.Trigger data-slot="hover-card-trigger" {...props} />;
 }
 

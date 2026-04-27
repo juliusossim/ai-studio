@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { MediaAssetIntent } from '@org/types';
 import { useRipplesApi } from '../api/api-provider';
 import { feedQueryKey } from '../feed/feed-query';
 import type {
@@ -19,11 +20,15 @@ export function useCreatePropertyMutation(accessToken?: string): CreatePropertyM
   });
 }
 
-export function useUploadMediaMutation(accessToken?: string): UploadMediaMutationResult {
+export function useUploadMediaMutation(
+  intent: MediaAssetIntent,
+  accessToken?: string,
+): UploadMediaMutationResult {
   const { client } = useRipplesApi();
 
   return useMutation({
-    mutationFn: (files) => client.uploadMedia(files, accessToken),
+    mutationFn: ({ files, onProgress }) =>
+      client.uploadMedia(files, accessToken, { intent, onProgress, source: 'device' }),
   });
 }
 

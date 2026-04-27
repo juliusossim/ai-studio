@@ -7,12 +7,7 @@ import type {
   VideoState,
 } from '@org/models';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  IMAGE_EXTENSIONS,
-  IMAGE_MIME_TYPES,
-  VIDEO_EXTENSIONS,
-  VIDEO_MIME_TYPES,
-} from '../utils';
+import { IMAGE_EXTENSIONS, IMAGE_MIME_TYPES, VIDEO_EXTENSIONS, VIDEO_MIME_TYPES } from '../utils';
 
 export type {
   MediaMetadata,
@@ -152,7 +147,7 @@ export function useMedia(source: MediaSource): UseMediaResult {
   }));
 
   const [videoState, setVideoState] = useState<VideoState | null>(
-    metadata.type === 'video' ? initialVideoState : null
+    metadata.type === 'video' ? initialVideoState : null,
   );
 
   // Update media type when source changes
@@ -268,8 +263,7 @@ export function useMedia(source: MediaSource): UseMediaResult {
     const updateVideoState = () => {
       const buffered =
         video.buffered.length > 0
-          ? (video.buffered.end(video.buffered.length - 1) / video.duration) *
-            100
+          ? (video.buffered.end(video.buffered.length - 1) / video.duration) * 100
           : 0;
 
       setVideoState({
@@ -317,7 +311,7 @@ export function useMedia(source: MediaSource): UseMediaResult {
               ...prev,
               isFullscreen: document.fullscreenElement === video,
             }
-          : null
+          : null,
       );
     };
 
@@ -411,9 +405,7 @@ export function formatVideoTime(seconds: number): string {
   const secs = Math.floor(seconds % 60);
 
   if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs
-      .toString()
-      .padStart(2, '0')}`;
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
   return `${minutes}:${secs.toString().padStart(2, '0')}`;
 }

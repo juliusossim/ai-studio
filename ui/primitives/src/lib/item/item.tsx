@@ -28,10 +28,7 @@ function ItemGroup({ className, ...props }: ItemGroupProps): React.ReactElement 
   );
 }
 
-function ItemSeparator({
-  className,
-  ...props
-}: ItemSeparatorProps): React.ReactElement {
+function ItemSeparator({ className, ...props }: ItemSeparatorProps): React.ReactElement {
   return (
     <Separator
       data-slot="item-separator"

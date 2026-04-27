@@ -12,23 +12,11 @@ export function FormInput({
   ...props
 }: Readonly<FormInputProps>): ReactElement {
   return (
-    <FieldWrapper
-      description={description}
-      label={label}
-      name={name}
-      required={required}
-    >
+    <FieldWrapper description={description} label={label} name={name} required={required}>
       {(field) => {
         const { ref: fieldRef, ...fieldProps } = field;
 
-        return (
-          <Input
-            {...fieldProps}
-            {...props}
-            className={cn(className)}
-            ref={fieldRef}
-          />
-        );
+        return <Input {...fieldProps} {...props} className={cn(className)} ref={fieldRef} />;
       }}
     </FieldWrapper>
   );

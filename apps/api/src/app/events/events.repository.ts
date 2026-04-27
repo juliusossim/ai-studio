@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EventType as PrismaEventType, Prisma, type BehaviorEvent } from '@prisma/client';
 import type { Event as RipplesEvent, EventType } from '@org/types';
+import { executePrismaOperation } from '../database/prisma-exception.mapper';
 import { PrismaService } from '../database/prisma.service';
 import type { CreateEventDto } from './dto/create-event.dto';
 
@@ -9,48 +10,72 @@ export class EventsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(input: CreateEventDto): Promise<RipplesEvent> {
-    const event = await this.prisma.behaviorEvent.create({
-      data: {
-        userId: input.userId,
-        sessionId: input.sessionId,
-        type: input.type as PrismaEventType,
-        entityId: input.entityId,
-        entityType: input.entityType,
-        metadata: this.toInputJson(input.metadata ?? {}),
+    const event = await executePrismaOperation(
+      () =>
+        this.prisma.behaviorEvent.create({
+          data: {
+            userId: input.userId,
+            sessionId: input.sessionId,
+            type: input.type as PrismaEventType,
+            entityId: input.entityId,
+            entityType: input.entityType,
+            metadata: this.toInputJson(input.metadata ?? {}),
+          },
+        }),
+      {
+        dependencyDetail: 'The event store is temporarily unavailable.',
       },
-    });
+    );
 
     return this.toEvent(event);
   }
 
   async findMany(): Promise<RipplesEvent[]> {
-    const events = await this.prisma.behaviorEvent.findMany({
-      orderBy: {
-        createdAt: 'desc',
+    const events = await executePrismaOperation(
+      () =>
+        this.prisma.behaviorEvent.findMany({
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+      {
+        dependencyDetail: 'The event store is temporarily unavailable.',
       },
-    });
+    );
 
     return events.map((event) => this.toEvent(event));
   }
 
   async findForEntity(entityId: string): Promise<RipplesEvent[]> {
-    const events = await this.prisma.behaviorEvent.findMany({
-      where: { entityId },
-      orderBy: {
-        createdAt: 'desc',
+    const events = await executePrismaOperation(
+      () =>
+        this.prisma.behaviorEvent.findMany({
+          where: { entityId },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+      {
+        dependencyDetail: 'The event store is temporarily unavailable.',
       },
-    });
+    );
 
     return events.map((event) => this.toEvent(event));
   }
 
   async countForEntity(entityId: string, type: EventType): Promise<number> {
-    return this.prisma.behaviorEvent.count({
-      where: {
-        entityId,
-        type: type as PrismaEventType,
+    return executePrismaOperation(
+      () =>
+        this.prisma.behaviorEvent.count({
+          where: {
+            entityId,
+            type: type as PrismaEventType,
+          },
+        }),
+      {
+        dependencyDetail: 'The event store is temporarily unavailable.',
       },
-    });
+    );
   }
 
   private toEvent(event: BehaviorEvent): RipplesEvent {

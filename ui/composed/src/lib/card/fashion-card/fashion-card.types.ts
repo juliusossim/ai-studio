@@ -32,6 +32,7 @@ export type FashionCardSettings = Readonly<{
   showDescription?: boolean;
   showActions?: boolean;
   showTitle?: boolean;
+  locale?: string;
   descriptionLineClamp: NonNullable<TruncatedTextProps['lineClamp']>;
   showOriginalPrice?: boolean;
   showDiscountPercentage?: boolean;
