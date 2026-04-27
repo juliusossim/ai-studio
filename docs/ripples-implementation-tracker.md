@@ -71,20 +71,26 @@ The repo already has these important foundations:
 - address assignment and verification foundation
 - property document verification foundation
 - behavior events
+- authenticated, owner-scoped listing media upload and attachment flow
 - heuristic feed module
+- validated route-level feed and discovery URL contracts in `apps/web`
+- a minimal `FeedQueryDto` boundary in `apps/api`
 - feed query hook in `shared/data`
 - feed UI in `ui/web`
 - media upload and rendering primitives
+- route boundaries for public discovery, feed, listing detail, creator profile,
+  inbox, dashboard, live, notifications, and catalog workflows
+- schema-level foundations for `CreatorProfile`, `ContentPost`, `Follow`,
+  `FeedImpression`, and `TrendSignal`
 
 The repo does not yet have these core AI-readiness pieces:
 
-- persisted `ContentPost`
 - real `LiveSession`
-- `FeedQueryDto`
-- feed impressions
+- a complete viewer-aware `FeedQueryDto`
+- functioning feed impression capture
 - viewer-location-aware feed retrieval
 - user/session preference summaries
-- trend snapshots
+- computed trend snapshots and trend services
 - candidate retrieval services
 - ranking feature snapshots
 - AI reranking
@@ -92,11 +98,37 @@ The repo does not yet have these core AI-readiness pieces:
 The repo also has important product limitations that this tracker alone will not
 solve:
 
-- feed access is currently authenticated-first rather than discovery-first
+- the public feed route at `/` is still a placeholder rather than a real
+  discovery surface
 - the feed is still mostly property inventory with synthetic wrappers
 - there is no usable creator, live, conversion, or trust flow yet
 - feature packages such as `features/dashboard`, `features/chat`, and
   `features/agents` do not yet have defined product ownership
+
+## 3.1 Substrate Status Snapshot
+
+This tracker should reflect the current app and route reality rather than an
+earlier pre-routing baseline.
+
+Status snapshot:
+
+- `Done`
+  property and listing persistence foundations
+- `Done`
+  route-level search contract parsing for discovery, feed, and listing detail
+- `Partially done`
+  API feed query validation, because `FeedQueryDto` exists but does not yet
+  include viewer context or feed mode inputs
+- `Partially done`
+  media and property interaction substrate, because authenticated writes and
+  basic like/save/share/view loops exist but richer feed telemetry does not
+- `Partially done`
+  creator/content/trend schema foundations, because the schema contains
+  `CreatorProfile`, `ContentPost`, `FeedImpression`, `Follow`, and
+  `TrendSignal`, but the application layers for them are still largely absent
+- `Not started`
+  visitor-safe discovery retrieval, impression capture, candidate blending,
+  preference summaries, and AI reranking
 
 ---
 
@@ -104,7 +136,7 @@ solve:
 
 This tracker is successful when Ripples has:
 
-- a validated feed request contract
+- a validated and viewer-aware feed request contract
 - trustworthy impression and interaction signals
 - viewer-aware retrieval inputs
 - real mixed-content inventory
@@ -123,7 +155,7 @@ deliver the full expected app outcome.
 
 Status:
 
-- `Not started`
+- `Partially done`
 
 Goal:
 
@@ -154,10 +186,11 @@ Dependencies:
 
 - existing feed controller/service
 - existing `FeedResponse`
+- existing route-level search validation in `apps/web`
 
 Outputs:
 
-- validated feed request contract
+- validated feed request contract across route and API boundaries
 - stable input surface for later personalization
 
 AI readiness effect:
@@ -166,14 +199,15 @@ AI readiness effect:
 
 Product limitation if absent:
 
-- the app cannot reliably support anonymous discovery, local relevance, or
-  separate visitor and signed-in feed behavior
+- the app can validate basic pagination, but it still cannot reliably support
+  anonymous discovery, local relevance, or separate visitor and signed-in feed
+  behavior
 
 ## 5.2 Feed Impression Tracking
 
 Status:
 
-- `Not started`
+- `Partially done`
 
 Goal:
 
@@ -196,6 +230,7 @@ Dependencies:
 
 - `BehaviorEvent`
 - feed rendering in `ui/web`
+- existing `FeedImpression` schema foundation
 
 Outputs:
 
@@ -258,7 +293,7 @@ Product limitation if absent:
 
 Status:
 
-- `Not started`
+- `Partially done`
 
 Goal:
 
@@ -274,13 +309,14 @@ Repo areas:
 Build:
 
 - `ContentPost`
-- `ContentMedia`
+- content attachment-backed media adoption
 - content service and repository
 - feed service support for persisted non-property content
 
 Dependencies:
 
 - canonical model agreement already exists
+- current schema foundations for `ContentPost` and related feed entities
 
 Outputs:
 
@@ -326,6 +362,7 @@ Build:
 Dependencies:
 
 - persisted content entities
+- agreement on the public feed and signed-in feed interaction model
 
 Outputs:
 
@@ -386,13 +423,14 @@ AI readiness effect:
 
 Product limitation if absent:
 
-- live remains a visual theme instead of a usable commerce surface
+- live remains a synthetic feed theme and route placeholder instead of a usable
+  commerce surface
 
 ## 6.2 Creator Foundations
 
 Status:
 
-- `Not started`
+- `Partially done`
 
 Goal:
 
@@ -417,6 +455,7 @@ Dependencies:
 - `User`
 - `OrganizationMembership`
 - social/event taxonomy
+- current schema and route placeholder foundations
 
 Outputs:
 
@@ -434,7 +473,7 @@ Product limitation if absent:
 
 Status:
 
-- `Not started`
+- `Partially done`
 
 Goal:
 
@@ -458,6 +497,7 @@ Dependencies:
 
 - expanded event taxonomy
 - impressions
+- existing `TrendSignal` schema foundation
 
 Outputs:
 
@@ -548,6 +588,7 @@ Dependencies:
 - persisted content
 - trend snapshots
 - preference summaries
+- viewer-aware feed query contract
 
 Outputs:
 
